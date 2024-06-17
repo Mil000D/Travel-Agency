@@ -1,0 +1,57 @@
+﻿@page "/login"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+
+<EditForm Model="@UserDTO" OnValidSubmit="@HandleValidSubmitAsync">
+<DataAnnotationsValidator/>
+    <MudText Align="Align.Center" Typo="Typo.h4" Class="mb-2">Login</MudText>
+    <MudCard Elevation="20" Style="min-width: 400px;">
+        <MudCardContent>
+            <MudTextField Label="Username" @bind-Value="UserDTO.Login" For="@(() => UserDTO.Login)" />
+            <MudTextField Label="Password" @bind-Value="UserDTO.Password" For="@(() => UserDTO.Password)" InputType="InputType.Password" />
+            <MudText Color="Color.Error">@_errorMessage</MudText>
+        </MudCardContent>
+        <MudCardActions Class="justify-center">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Log in</MudButton>
+        </MudCardActions>
+    </MudCard>
+    <MudCard Elevation="20" Style="min-width: 400px;" Class="mt-3">
+        <MudCardContent Class="d-flex justify-center">
+            <MudText Typo="Typo.h6">Don't have an account?</MudText>
+        </MudCardContent>
+        <MudCardActions Class="justify-center">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@OnRegisterClick">Register</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+
+    @code {
+    [Parameter]
+    public LoginUserDTO UserDTO { get; set; }
+    private string? _errorMessage;
+
+    protected override void OnInitialized()
+    {
+        UserDTO = new LoginUserDTO();
+    }
+
+    private async Task HandleValidSubmitAsync()
+    {
+        // var response = await HttpClient.PostAsJsonAsync("api/authentication/login", UserDTO);
+
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     ((UserAuthenticationStateProvider)AuthenticationStateProvider).AuthenticateUser();
+        //     NavigationManager.NavigateTo("/");
+        // }
+        // else
+        // {
+        //     _errorMessage = Localizer["ErrorMessage"];
+        // }
+    }
+    private void OnRegisterClick()
+    {
+        NavigationManager.NavigateTo("/register");
+    }
+}

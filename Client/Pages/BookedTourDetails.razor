@@ -1,0 +1,60 @@
+﻿@page "/booked-tour-details"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Booked Tour Details</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudText Typo="Typo.h4" Class="mb-4">Booked Tour Details</MudText>
+
+    @if (tour != null)
+    {
+        <MudPaper Class="p-4">
+            <MudCard Class="mb-4">
+                <MudCardMedia Image="@tour.ImageUrl" Height="300" />
+                <MudCardContent>
+                    <MudText Typo="Typo.h5">@tour.Title</MudText>
+                    <MudText Typo="Typo.body1">Dates: @tour.StartDate.ToString("dd MMM yyyy") - @tour.EndDate.ToString("dd MMM yyyy")</MudText>
+                    <MudText Typo="Typo.body1">Total Price: @tour.Price.ToString("C")</MudText>
+                </MudCardContent>
+            </MudCard>
+
+            <MudDivider Class="my-2" Light="true"/>
+
+            <MudText Typo="Typo.h6">Payment Information</MudText>
+            <MudText Typo="Typo.body1">Payment Method: @tour.PaymentMethod</MudText>
+            <MudText Typo="Typo.body1">Payment Date: @tour.PaymentDate?.ToString("dd MMM yyyy")</MudText>
+
+            <MudDivider Class="my-2" Light="true"/>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GoBack">Back to Booked Tours</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-2">Cancel</MudButton>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int TourId { get; set; }
+
+    private GetBookedTourDetailsDTO tour = new GetBookedTourDetailsDTO
+    {
+        Id = 1,
+        Title = "Lower Antelope Canyon",
+        ImageUrl = "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/7f/67/da.jpg",
+        StartDate = new DateTime(2023, 6, 25),
+        EndDate = new DateTime(2023, 6, 28),
+        Price = 2769.30f,
+        PaymentMethod = "Card",
+        PaymentDate = new DateTime(2023, 6, 25)
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/booked-tours");
+    }
+}

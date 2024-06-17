@@ -1,0 +1,42 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudSelect T="TransportDTO" @bind-Value="TransportBooking.Transport" ToStringFunc="@converter" Label="Select transport" HelperText="Enum" OpenIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Secondary" Required="true">
+            @foreach (TransportDTO item in transports)
+            {
+                <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudTextField @bind-Value="TransportBooking.Origin" Label="Origin" Required="true" />
+        <MudTextField @bind-Value="TransportBooking.Destination" Label="Destination" Required="true" />
+        <MudTextField T="DateTime?" @bind-Value="TransportBooking.DepartureTime" Format="s" Label="Departure Time" InputType="InputType.DateTimeLocal" Required="true" />
+        <MudTextField T="DateTime?" @bind-Value="TransportBooking.ArrivalTime" Format="s" Label="Arrival Time" InputType="InputType.DateTimeLocal" Required="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save</MudButton>
+        <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    private List<TransportDTO> transports = new List<TransportDTO>()
+    {
+        new TransportDTO { Id = 1, Name = "Bus" },
+        new TransportDTO { Id = 2, Name = "Train" },
+        new TransportDTO { Id = 3, Name = "Flight" },
+    };
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    Func<TransportDTO, string>? converter = p => p?.Name;
+
+    [Parameter] public TransportBookingDTO TransportBooking { get; set; } = new TransportBookingDTO();
+
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(TransportBooking));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

@@ -1,0 +1,174 @@
+﻿@page "/tour-details"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<MudPaper Class="border-8 border-solid mud-border-primary pa-4" Elevation="10">
+    <MudCarousel Class="mudblazor-carousel" Style="min-height:225px; min-width:500px;" @ref="carousel" ItemsSource="@getTourDetailsDTO.ImagesURL" @bind-SelectedIndex="selectedIndex" ShowArrows="@(!isSmallDevice)" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle">
+        <ItemTemplate>
+            <MudElement Class="pr-6 pl-6 d-flex flex-column justify-center" style="height:100%">
+                <MudElement Class="zoom-card d-flex align-self-center">
+                    <MudImage ObjectPosition="ObjectPosition.Center" Height="300" Width="600" Src="@context" Alt="Tour Image" Elevation="25" Style="border-radius: 30px;" />
+                </MudElement>
+            </MudElement>
+        </ItemTemplate>
+    </MudCarousel>
+
+    <MudText Typo="Typo.h4">@getTourDetailsDTO.Title</MudText>
+        <MudText Typo="Typo.body1">@getTourDetailsDTO.Description</MudText>
+        <MudText Typo="Typo.h5">Total Price: @getTourDetailsDTO.TotalPrice zł</MudText>
+
+        <MudDivider Class="my-2" Light="true"/>
+
+        @if (getTourDetailsDTO.Lodgings != null && getTourDetailsDTO.Lodgings.Count > 0)
+    {
+        <MudText Typo="Typo.h6">Lodging Details</MudText>
+        <MudElement Class="d-flex flex-wrap">
+            @foreach (var lodging in getTourDetailsDTO.Lodgings)
+            {
+                <MudPaper Class="p-3 my-2 mx-2" Elevation="20" Style="width:calc(50% - 16px);">
+                    <MudText Typo="Typo.subtitle1"><b>@lodging.Name</b></MudText>
+                    <MudText Typo="Typo.body2">Address: @lodging.Address</MudText>
+                    <MudText Typo="Typo.body2">Phone: @lodging.Phone</MudText>
+                    <MudText Typo="Typo.body2">Email: @lodging.Email</MudText>
+                    @if (!string.IsNullOrEmpty(lodging.Owner))
+                    {
+                        <MudText Typo="Typo.body2">Owner: @lodging.Owner</MudText>
+                    }
+                    @if (lodging.Stars.HasValue)
+                    {
+                        <MudText Typo="Typo.body2">Stars: @lodging.Stars</MudText>
+                    }
+                    @if (!string.IsNullOrEmpty(lodging.OfficialWebsiteURL))
+                    {
+                        <MudText Typo="Typo.body2">Website: <MudLink Href="@lodging.OfficialWebsiteURL">@lodging.OfficialWebsiteURL</MudLink></MudText>
+                    }
+                    @if (lodging.PetFriendly != null)
+                    {
+                        <MudText Typo="Typo.body2">Pet Friendly: @(lodging.PetFriendly == true ? "Yes" : "No")</MudText>
+                    }
+                    @if(lodging.BreakfastIncluded != null)
+                    {
+                        <MudText Typo="Typo.body2">Breakfast Included: @(lodging.BreakfastIncluded == true ? "Yes" : "No")</MudText>
+                    }
+                    @if(lodging.Amenities != null && lodging.Amenities.Count > 0)
+                    {
+                        <MudText Typo="Typo.body2">Amenities: @string.Join(", ", lodging.Amenities ?? new List<string>())</MudText>
+                    }
+                    <MudText Typo="Typo.body2">Lodging Type: @lodging.LodgingType</MudText>
+                    <MudText Typo="Typo.subtitle1">@lodging.Description</MudText>
+                </MudPaper>
+            }
+        </MudElement>
+    }
+
+    <MudDivider Class="my-2" Light="true"/>
+
+    @if (getTourDetailsDTO.Transports != null && getTourDetailsDTO.Transports.Count > 0)
+    {
+        <MudText Typo="Typo.h6">Transport Details</MudText>
+        <MudElement Class="d-flex flex-wrap">
+            @foreach (var transport in getTourDetailsDTO.Transports)
+            {
+                <MudPaper Class="p-3 my-2 mx-2" Elevation="20" Style="width:calc(50% - 16px);">
+                    <MudText Typo="Typo.subtitle1"><b>@transport.Description</b></MudText>
+                        <MudText Typo="Typo.body2">Company: @transport.Company</MudText>
+                        <MudText Typo="Typo.body2">Capacity: @transport.Capacity</MudText>
+                        <MudText Typo="Typo.body2">Air Conditioning: @(transport.AirConditioning ? "Yes" : "No")</MudText>
+                        <MudText Typo="Typo.body2">Max Speed: @transport.MaxSpeed</MudText>
+                        <MudText Typo="Typo.body2">Cargo Capacity: @transport.CargoCapacity</MudText>
+                        <MudText Typo="Typo.body2">Transport Type: @transport.TransportType</MudText>
+                    </MudPaper>
+            }
+        </MudElement>
+    }
+
+    <MudDivider Class="my-2" Light="true"/>
+
+    <MudElement Class="d-flex justify-center">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="BookTour">Book</MudButton>
+    </MudElement>
+</MudPaper>
+
+@code {
+    private MudCarousel<string> carousel = new MudCarousel<string>();
+    private bool arrows = true;
+    private bool bullets = false;
+    private bool enableSwipeGesture = true;
+    private bool autocycle = true;
+    private GetTourDetailsDTO getTourDetailsDTO = new GetTourDetailsDTO()
+        {
+            Id = 1,
+            Title = "Golden Circle",
+            Description = "The Golden Circle is a popular tourist route in southern Iceland, covering about 300 kilometres (190 mi) looping from Reykjavík into central Iceland and back. It is the area that contains most tours and travel-related activities in Iceland. The three primary stops on the route are the national park Þingvellir, the waterfall Gullfoss (meaning 'golden falls'), and the geothermally active valley of Haukadalur, which contains the geysers Geysir and Strokkur. Though Geysir has been mostly dormant for many years, Strokkur, on the other hand, continues to erupt at every 5–10 minutes interval.",
+            ImagesURL = new List<string>() { "https://www.w3schools.com/w3images/lights.jpg", "https://www.w3schools.com/w3images/nature.jpg", "https://www.w3schools.com/w3images/mountains.jpg" },
+            TotalPrice = 1000,
+            Lodgings = new List<GetLodgingDTO>
+        {
+            new GetLodgingDTO
+            {
+                Id = 1,
+                Name = "Hotel Knowhere",
+                Address = "Lodging Address",
+                Description = "Lodging Description",
+                Phone = "123-456-7890",
+                Email = "lodging@example.com",
+                Owner = "John Doe",
+                Stars = 4,
+                OfficialWebsiteURL = "https://lodging.example.com",
+                Amenities = new List<string> { "WiFi", "Pool", "Spa" },
+                PetFriendly = true,
+                BreakfastIncluded = true,
+                LodgingType = "Hotel"
+            },
+            new GetLodgingDTO
+            {
+                Id = 2,
+                Name = "Hotel Somewhere",
+                Address = "Lodging Address",
+                Description = "Lodging Description",
+                Phone = "123-456-7890",
+                Email = "lodging@example.com",
+                Owner = "John Doe",
+                Stars = 4,
+                LodgingType = "Inn",
+            }
+        },
+            Transports = new List<GetTransportDTO>
+        {
+            new GetTransportDTO
+            {
+                Id = 1,
+                Description = "Transport Description",
+                Company = "Transport Company",
+                Capacity = "50 people",
+                AirConditioning = true,
+                MaxSpeed = 120.5f,
+                CargoCapacity = 200,
+                TransportType = "Bus"
+            },
+            new GetTransportDTO
+            {
+                Id = 2,
+                Description = "Transport Description",
+                Company = "Transport Company",
+                Capacity = "50 people",
+                AirConditioning = true,
+                MaxSpeed = 120.5f,
+                CargoCapacity = 200,
+                TransportType = "Bus"
+            }
+        }
+        };
+    private int selectedIndex = 0;
+    private int selected = 1;
+    private bool isSmallDevice = false;
+
+    private void BookTour()
+    {
+        NavigationManager.NavigateTo($"/book-tour/");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+}

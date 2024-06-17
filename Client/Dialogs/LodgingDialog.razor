@@ -1,0 +1,42 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudSelect T="LodgingDTO" @bind-Value="@LodgingBooking.Lodging" ToStringFunc="@converter" Label="Select lodging" OpenIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Secondary" Required="true">
+            @foreach (LodgingDTO item in lodgings)
+            {
+                <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudTextField @bind-Value="LodgingBooking.RoomType" Label="Room Type" Required="true" />
+        <MudTextField @bind-Value="LodgingBooking.MaxCapacity" Label="Max Capacity" InputType="InputType.Number" Required="true" />
+        <MudTextField T="DateTime?" Format="yyyy-MM-dd" @bind-Value="LodgingBooking.CheckInDate" Label="Check-In Date" InputType="InputType.Date" Required="true" />
+        <MudTextField T="DateTime?" Format="yyyy-MM-dd" @bind-Value="LodgingBooking.CheckOutDate" Label="Check-Out Date" InputType="InputType.Date" Required="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">Save</MudButton>
+        <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private List<LodgingDTO> lodgings = new List<LodgingDTO>()
+    {
+        new LodgingDTO { Id = 1, Name = "Hotel" },
+        new LodgingDTO { Id = 2, Name = "Hostel" },
+        new LodgingDTO { Id = 3, Name = "Motel" },
+    };
+    Func<LodgingDTO, string> converter = p => p?.Name;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public LodgingBookingDTO LodgingBooking { get; set; } = new LodgingBookingDTO();
+
+    private void Save()
+    {
+        MudDialog.Close(DialogResult.Ok(LodgingBooking));
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

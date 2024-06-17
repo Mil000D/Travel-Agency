@@ -1,0 +1,70 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<MudThemeProvider Theme="@MyCustomTheme"/>
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudStack Row="true">
+            <MudSelect T="string" @bind-Value="@language" Variant="Variant.Outlined" Margin="Margin.Dense">
+                <MudSelectItem Value="@($"Polish")">
+                    <MudImage Src="https://upload.wikimedia.org/wikipedia/commons/1/12/Flag_of_Poland.svg" Height="14" Class="mr-1" />Polish
+                </MudSelectItem>
+                <MudSelectItem Value="@($"English")">
+                    <MudImage Src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" Height="14" Class="mr-1" />English
+                </MudSelectItem>
+            </MudSelect>
+        </MudStack>
+        <MudSpacer />
+        <MudIcon Icon="@Icons.Material.Filled.BeachAccess" Size="Size.Medium" />
+        <MudText Typo="Typo.h5" Class="cursor-pointer" @onclick="@((e) => NavigationManager.NavigateTo("/"))"><b>&nbsp&nbspDream Destinations&nbsp&nbsp</b></MudText>
+        <MudIcon Icon="@Icons.Material.Filled.FlightTakeoff" Size="Size.Medium" />
+        <MudSpacer />
+        @if (NavigationManager.Uri.Contains("/login"))
+        {
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" @onclick="@OnRegisterClick">Register</MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" @onclick="@OnLoginClick">Login</MudButton>
+        }
+    </MudAppBar>
+    <MudMainContent>
+        <MudElement Class="d-flex justify-center align-center ma-2 pa-2">
+            <CascadingValue Value="this">
+                @Body
+            </CascadingValue>
+        </MudElement>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private string language = "English";
+    private MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new PaletteLight()
+            {
+                Primary = Colors.Green.Default,
+                Secondary = Colors.Shades.White,
+                Background = Colors.Shades.White,
+                Surface = Colors.Shades.White,
+                AppbarBackground = Colors.Green.Default,
+                AppbarText = Colors.Shades.White,
+                DrawerBackground = Colors.Green.Default,
+                DrawerText = Colors.Shades.White,
+                DrawerIcon = Colors.Shades.White
+            }
+        };
+
+    private void OnLoginClick()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private void OnRegisterClick()
+    {
+        NavigationManager.NavigateTo("/register");
+    }
+}

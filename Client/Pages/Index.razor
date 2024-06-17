@@ -1,0 +1,100 @@
+﻿@page "/"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+@if (_tours == null)
+{
+    <MudElement Class="d-flex justify-center">
+        <MudProgressCircular Indeterminate="true" />
+    </MudElement>
+}
+else if (_tours.Count() == 0)
+{
+    <MudElement Class="d-flex justify-center">
+        <MudAlert Elevation="20" Severity="Severity.Error">No tours</MudAlert>
+    </MudElement>
+}
+else
+{
+    <MudElement Class="d-flex flex-column justify-space-between" Style="height: 100vh;">
+        <MudElement Class="flex-grow-1">
+            <MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-content-center">
+                <MudPaper Class="pa-4 mt-3" Elevation="20">
+                    <MudGrid Justify="Justify.Center" Class="align-items-center">
+                        <MudItem xs="12" md="3">
+                            <MudTextField @bind-Value="TextValue" Placeholder="Where to?" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+                        </MudItem>
+                        <MudItem xs="6" md="2">
+                            <MudDatePicker Label="Check in" @bind-Date="_checkInDate" />
+                        </MudItem>
+                        <MudItem xs="6" md="2">
+                            <MudDatePicker Label="Check out" @bind-Date="_checkOutDate" />
+                        </MudItem>
+                        <MudItem xs="12" md="2" Class="d-flex align-items-center justify-content-center">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Search">Search</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudPaper>
+            </MudContainer>
+
+            <MudElement Class="gap-x-6 gap-y-6 d-flex flex-wrap justify-space-around mt-4">
+                @foreach (var tour in _tours)
+                {
+                    <MudElement Class="zoom-card">
+                        <MudCard Elevation="20" Style="width:290px;" Class="cursor-pointer" @onclick="@(() => NavigateToTourDetails(tour.Id))">
+                            <MudCardMedia Image="@tour.HeaderPhotoURL" Height="200" />
+                            <MudCardContent Style="min-height:50px;">
+                                <MudText Typo="Typo.h6">@tour.Title</MudText>
+                                <MudText Typo="Typo.body2">@tour.Description</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudElement>
+                }
+            </MudElement>
+        </MudElement>
+
+        <MudElement Class="mt-4">
+            <MudContainer Class="d-flex justify-content-center mb-4">
+                <MudPagination Count="_pagesCount" SelectedChanged="OnPageChanged"/>
+            </MudContainer>
+        </MudElement>
+    </MudElement>
+}
+
+@code {
+    private DateTime? _checkInDate;
+    private DateTime? _checkOutDate;
+    public string TextValue { get; set; }
+
+    private int _currentPage = 1;
+    private int _itemsPerPage = 8;
+    private int _pagesCount;
+    private void Search()
+    {
+        // Implement search logic here
+    }
+
+    private List<GetTourDTO>? _tours;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadToursAsync();
+    }
+
+    private void NavigateToTourDetails(int idTour)
+    {
+        NavigationManager.NavigateTo($"/tour-details");
+    }
+    private async Task LoadToursAsync()
+    {
+        _tours = await HttpClient.GetFromJsonAsync<List<GetTourDTO>>($"api/tours?pageNumber={_currentPage}&pageSize={_itemsPerPage}");
+        var toursCount = await HttpClient.GetFromJsonAsync<int>("api/tours/count");
+        _pagesCount = (int)Math.Ceiling(toursCount / (double)_itemsPerPage);
+    }
+    private async Task OnPageChanged(int page)
+    {
+        _currentPage = page;
+        Console.WriteLine($"Page changed to {_currentPage}");
+        await LoadToursAsync();
+    }
+}

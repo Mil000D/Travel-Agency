@@ -1,0 +1,32 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="imageUrl" Label="Image URL" FullWidth="true" Required="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Submit</MudButton>
+        <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    private string imageUrl;
+
+    private void Submit()
+    {
+        if (!string.IsNullOrEmpty(imageUrl))
+        {
+            MudDialog.Close(DialogResult.Ok(imageUrl));
+        }
+        else
+        {
+            MudDialog.Close(DialogResult.Cancel());
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Close(DialogResult.Cancel());
+    }
+}

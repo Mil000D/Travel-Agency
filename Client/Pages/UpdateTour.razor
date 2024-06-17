@@ -1,0 +1,326 @@
+﻿@page "/update-tour"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<PageTitle>Update Tour</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h4" Class="mb-4">Update Tour</MudText>
+    @if (tour != null)
+    {
+        <MudPaper Class="p-4" Elevation="20">
+            <MudForm @ref="form" OnValidSubmit="HandleValidSubmit">
+                <MudTextField @bind-Value="tour.Title" Label="Title" Required="true" />
+                <MudTextField @bind-Value="tour.Description" Label="Description" Lines="5" Required="true" />
+                <MudText Typo="Typo.h6" Class="mt-4">Images*</MudText>
+                <MudElement Class="d-flex flex-wrap">
+                    @foreach (var imageUrl in tour.ImagesURL)
+                    {
+                        <MudElement Class="m-2">
+                            <MudPaper Class="pa-2" Elevation="10">
+                                <MudBadge Class="zoom-card cursor-pointer" Color="Color.Error" @onclick="@(() => ConfirmDeleteImageAsync(imageUrl))" Icon="@Icons.Material.Filled.Delete" Overlap="true" Bordered="true">
+                                    <MudImage Src="@imageUrl" Alt="Tour Image" Width="150" Class="rounded-sm" />
+                                </MudBadge>
+                            </MudPaper>
+                        </MudElement>
+                    }
+                </MudElement>
+                <MudElement Class="d-flex justify-content-center mt-4">
+                    <MudFab StartIcon="@Icons.Material.Filled.InsertPhoto" Color="Color.Primary" Label="Add Image" OnClick="OpenAddImageDialogAsync" />
+                </MudElement>
+                <MudDivider Class="my-2" Light="true" />
+                <MudElement Class="row mt-4">
+                    <MudElement Class="col-12 col-md-6">
+                        <MudPaper Class="mud-theme-primary pa-4">
+                            <MudText Class="mb-2" Typo="Typo.h6">Transports*</MudText>
+                            <MudElement Class="row">
+                                @foreach (var transportBooking in tour.TransportBookings)
+                                {
+                                    <MudElement Class="col-12 col-sm-6 mb-3 zoom-card">
+                                        <MudPaper Class="p-2" Elevation="10">
+                                            <MudText Typo="Typo.subtitle1"><b>@transportBooking.Transport.Name from @transportBooking.Origin to @transportBooking.Destination</b></MudText>
+                                            <MudText Typo="Typo.body2">Departure: @transportBooking.DepartureTime</MudText>
+                                                <MudText Typo="Typo.body2">Arrival: @transportBooking.ArrivalTime</MudText>
+                                                <MudElement Class="d-flex justify-content-center">
+                                                    <MudButton Variant="Variant.Text" OnClick="@(() => OpenTransportDialogAsync(transportBooking))">Edit</MudButton>
+                                                    <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => ConfirmDeleteTransportAsync(transportBooking))">Delete</MudButton>
+                                                </MudElement>
+                                            </MudPaper>
+                                        </MudElement>
+                                }
+                            </MudElement>
+                            <MudElement Class="d-flex justify-content-center">
+                                <MudFab Color="Color.Transparent" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.AirportShuttle" Style="color: white;" OnClick="@(() => OpenTransportDialogAsync())" Label="Add Transport" />
+                            </MudElement>
+                        </MudPaper>
+                    </MudElement>
+                    <MudElement Class="col-12 col-md-6">
+                        <MudPaper Class="mud-theme-primary pa-4">
+                            <MudText Class="mb-2" Typo="Typo.h6">Lodgings*</MudText>
+                            <MudElement Class="row">
+                                @foreach (var lodgingBooking in tour.LodgingBookings)
+                                {
+                                    <MudElement Class="col-12 col-sm-6 mb-3 zoom-card">
+                                        <MudPaper Class="p-2" Elevation="10">
+                                            <MudText Typo="Typo.subtitle1"><b>@lodgingBooking.Lodging.Name</b></MudText>
+                                            <MudText Typo="Typo.body2">Room Type: @lodgingBooking.RoomType</MudText>
+                                                <MudText Typo="Typo.body2">Capacity: @lodgingBooking.MaxCapacity</MudText>
+                                                <MudText Typo="Typo.body2">Check-In: @lodgingBooking.CheckInDate?.ToString("d")</MudText>
+                                                <MudText Typo="Typo.body2">Check-Out: @lodgingBooking.CheckOutDate?.ToString("d")</MudText>
+                                                <MudElement Class="d-flex justify-content-center">
+                                                    <MudButton Variant="Variant.Text" OnClick="@(() => OpenLodgingDialogAsync(lodgingBooking))">Edit</MudButton>
+                                                    <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => ConfirmDeleteLodgingAsync(lodgingBooking))">Delete</MudButton>
+                                                </MudElement>
+                                            </MudPaper>
+                                        </MudElement>
+                                }
+                            </MudElement>
+                            <MudElement Class="d-flex justify-content-center">
+                                <MudFab Color="Color.Transparent" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.Hotel" Style="color: white;" OnClick="@(() => OpenLodgingDialogAsync())" Label="Add Lodging" />
+                            </MudElement>
+                        </MudPaper>
+                    </MudElement>
+                </MudElement>
+                <MudDivider Class="my-2" Light="true" />
+                <MudElement Class="d-flex justify-content-center">
+                    <MudFab Class="mt-4" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Style="color: white;" Label="Update Tour" />
+                </MudElement>
+            </MudForm>
+        </MudPaper>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int TourId { get; set; }
+    private MudTheme Theme = new MudTheme();
+
+    private UpdateTourDTO tour = new UpdateTourDTO
+        {
+            Id = 1,
+            Title = "Yellowstone Tour",
+            Description = "Explore the breathtaking beauty of Yellowstone National Park, a UNESCO World Heritage site. Experience the geothermal wonders at Old Faithful, witness the grandeur of the Grand Canyon of the Yellowstone, and marvel at the diverse wildlife roaming the park. This tour offers a comprehensive adventure through one of America's most iconic national parks.",
+            ImagesURL = new List<string>() { "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0b/eb/d2/10/grand-canyon-of-yellowstone.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/58/d1/0b/grand-canyon-of-the-yellowston.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/58/d1/00/grand-canyon-of-the-yellowston.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/58/d0/fc/grand-canyon-of-the-yellowston.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/06/10/7b/24/gran-canyon-di-yellowstone.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/38/d8/c9/from-uncle-tom-trail.jpg" },
+            TransportBookings = new List<TransportBookingDTO>
+            {
+                new TransportBookingDTO
+                {
+                    Id = 1,
+                    Transport = new TransportDTO { Id = 1, Name = "Flight" },
+                    Origin = "Warsaw, Poland",
+                    Destination = "Jackson Hole, USA",
+                    DepartureTime = new DateTime(2023, 6, 25, 10, 0, 0),
+                    ArrivalTime = new DateTime(2023, 6, 25, 13, 0, 0)
+                },
+                new TransportBookingDTO
+                {
+                    Id = 2,
+                    Transport = new TransportDTO { Id = 2, Name = "Car" },
+                    Origin = "Jackson Hole Airport",
+                    Destination = "Yellowstone National Park",
+                    DepartureTime = new DateTime(2023, 6, 25, 14, 0, 0),
+                    ArrivalTime = new DateTime(2023, 6, 25, 16, 0, 0)
+                }
+            },
+            LodgingBookings = new List<LodgingBookingDTO>
+            {
+                new LodgingBookingDTO
+                {
+                    Id = 1,
+                    Lodging = new LodgingDTO { Id = 1, Name = "Old Faithful Inn" },
+                    RoomType = "Standard Room",
+                    CheckInDate = new DateTime(2023, 6, 25),
+                    CheckOutDate = new DateTime(2023, 6, 28),
+                    MaxCapacity = 4
+                },
+                new LodgingBookingDTO
+                {
+                    Id = 2,
+                    Lodging = new LodgingDTO { Id = 2, Name = "Mammoth Hot Springs Hotel" },
+                    RoomType = "Suite",
+                    CheckInDate = new DateTime(2023, 6, 28),
+                    CheckOutDate = new DateTime(2023, 6, 30),
+                    MaxCapacity = 2
+                }
+            }
+        };
+    private MudForm form;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tour = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/{TourId}");
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await HttpClient.PutAsJsonAsync($"api/tours/{TourId}", tour);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        if (response.IsSuccessStatusCode)
+        {
+            Snackbar.Add("Tour updated successfully!", Severity.Success);
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Snackbar.Add("Failed to update the tour. Please try again.", Severity.Error);
+        }
+    }
+
+    private async Task OpenTransportDialogAsync(TransportBookingDTO? transportBooking = null)
+    {
+        var parameters = new DialogParameters
+        {
+            { "TransportBooking", transportBooking == null ? new TransportBookingDTO() : new TransportBookingDTO 
+                {
+                    Id = transportBooking.Id,
+                    Transport = new TransportDTO { Id = transportBooking.Transport.Id, Name = transportBooking.Transport.Name },
+                    Origin = transportBooking.Origin,
+                    Destination = transportBooking.Destination,
+                    DepartureTime = transportBooking.DepartureTime,
+                    ArrivalTime = transportBooking.ArrivalTime,
+                }
+            }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<TransportDialog>(transportBooking == null ? "Add Transport" : "Update Transport", parameters, options);
+        var result = await dialog.Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+        var updatedTransportBooking = result.Data as TransportBookingDTO;
+        if(updatedTransportBooking == null)
+        {
+            return;
+        }
+        if (transportBooking != null && updatedTransportBooking.Id != 0)
+        {
+            tour.TransportBookings.Remove(transportBooking);
+        }
+        tour.TransportBookings.Add(updatedTransportBooking);
+    }
+
+    private async Task OpenLodgingDialogAsync(LodgingBookingDTO? lodgingBooking = null)
+    {
+        var parameters = new DialogParameters
+        {
+            { "LodgingBooking", lodgingBooking == null ? new LodgingBookingDTO() : new LodgingBookingDTO
+                {
+                    Id = lodgingBooking.Id,
+                    Lodging = new LodgingDTO { Id = lodgingBooking.Lodging.Id, Name = lodgingBooking.Lodging.Name },
+                    RoomType = lodgingBooking.RoomType,
+                    MaxCapacity = lodgingBooking.MaxCapacity,
+                    CheckInDate = lodgingBooking.CheckInDate,
+                    CheckOutDate = lodgingBooking.CheckOutDate,
+                }
+            }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<LodgingDialog>(lodgingBooking == null ? "Add Lodging" : "Update Lodging", parameters, options);
+        var result = await dialog.Result;
+
+        if (result.Canceled)
+        {
+            return;
+        }
+        var updatedTransportBooking = result.Data as LodgingBookingDTO;
+        if (updatedTransportBooking == null)
+        {
+            return;
+        }
+        if (lodgingBooking != null && updatedTransportBooking.Id != 0)
+        {
+            tour.LodgingBookings.Remove(lodgingBooking);
+        }
+        tour.LodgingBookings.Add(updatedTransportBooking);
+    }
+
+
+    private async Task OpenAddImageDialogAsync()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<ImageDialog>("Add New Image", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var newImageUrl = result.Data as string;
+            if (newImageUrl != null)
+            {
+                tour.ImagesURL.Add(newImageUrl);
+            }
+        }
+    }
+
+    private async Task ConfirmDeleteTransportAsync(TransportBookingDTO transport)
+    {
+        if (tour.TransportBookings.Count <= 1)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("You cannot delete the last transport.", Severity.Error);
+            return;
+        }
+
+        var parameters = new DialogParameters
+        {
+            { "Message", "Are you sure you want to delete this transport?" }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Transport", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            tour.TransportBookings.Remove(transport);
+        }
+    }
+
+    private async Task ConfirmDeleteLodgingAsync(LodgingBookingDTO lodging)
+    {
+        if (tour.LodgingBookings.Count <= 1)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("You cannot delete the last lodging.", Severity.Error);
+            return;
+        }
+
+        var parameters = new DialogParameters
+        {
+            { "Message", "Are you sure you want to delete this lodging?" }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Lodging", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            tour.LodgingBookings.Remove(lodging);
+        }
+    }
+
+    private async Task ConfirmDeleteImageAsync(string imageUrl)
+    {
+        if (tour.ImagesURL.Count <= 1)
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("You cannot delete the last image.", Severity.Error);
+            return;
+        }
+        var parameters = new DialogParameters
+        {
+            { "Message", "Are you sure you want to delete this image?" }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Image", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            tour.ImagesURL.Remove(imageUrl);
+        }
+    }
+}
