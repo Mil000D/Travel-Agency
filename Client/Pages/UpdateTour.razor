@@ -97,60 +97,12 @@
     public int TourId { get; set; }
     private MudTheme Theme = new MudTheme();
 
-    private UpdateTourDTO tour = new UpdateTourDTO
-        {
-            Id = 1,
-            Title = "Yellowstone Tour",
-            Description = "Explore the breathtaking beauty of Yellowstone National Park, a UNESCO World Heritage site. Experience the geothermal wonders at Old Faithful, witness the grandeur of the Grand Canyon of the Yellowstone, and marvel at the diverse wildlife roaming the park. This tour offers a comprehensive adventure through one of America's most iconic national parks.",
-            ImagesURL = new List<string>() { "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0b/eb/d2/10/grand-canyon-of-yellowstone.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/58/d1/0b/grand-canyon-of-the-yellowston.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/58/d1/00/grand-canyon-of-the-yellowston.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/58/d0/fc/grand-canyon-of-the-yellowston.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/06/10/7b/24/gran-canyon-di-yellowstone.jpg", "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/38/d8/c9/from-uncle-tom-trail.jpg" },
-            TransportBookings = new List<TransportBookingDTO>
-            {
-                new TransportBookingDTO
-                {
-                    Id = 1,
-                    Transport = new TransportDTO { Id = 1, Name = "Flight" },
-                    Origin = "Warsaw, Poland",
-                    Destination = "Jackson Hole, USA",
-                    DepartureTime = new DateTime(2023, 6, 25, 10, 0, 0),
-                    ArrivalTime = new DateTime(2023, 6, 25, 13, 0, 0)
-                },
-                new TransportBookingDTO
-                {
-                    Id = 2,
-                    Transport = new TransportDTO { Id = 2, Name = "Car" },
-                    Origin = "Jackson Hole Airport",
-                    Destination = "Yellowstone National Park",
-                    DepartureTime = new DateTime(2023, 6, 25, 14, 0, 0),
-                    ArrivalTime = new DateTime(2023, 6, 25, 16, 0, 0)
-                }
-            },
-            LodgingBookings = new List<LodgingBookingDTO>
-            {
-                new LodgingBookingDTO
-                {
-                    Id = 1,
-                    Lodging = new LodgingDTO { Id = 1, Name = "Old Faithful Inn" },
-                    RoomType = "Standard Room",
-                    CheckInDate = new DateTime(2023, 6, 25),
-                    CheckOutDate = new DateTime(2023, 6, 28),
-                    MaxCapacity = 4
-                },
-                new LodgingBookingDTO
-                {
-                    Id = 2,
-                    Lodging = new LodgingDTO { Id = 2, Name = "Mammoth Hot Springs Hotel" },
-                    RoomType = "Suite",
-                    CheckInDate = new DateTime(2023, 6, 28),
-                    CheckOutDate = new DateTime(2023, 6, 30),
-                    MaxCapacity = 2
-                }
-            }
-        };
+    private UpdateTourDTO tour;
     private MudForm form;
 
     protected override async Task OnInitializedAsync()
     {
-        tour = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/{TourId}");
+        tour = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/1");
     }
 
     private async Task HandleValidSubmit()

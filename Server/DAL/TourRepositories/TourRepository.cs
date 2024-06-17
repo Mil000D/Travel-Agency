@@ -30,7 +30,7 @@ namespace MASProject.Server.DAL.TourRepositories
 
         public async Task<Tour?> GetTourAsync(int id)
         {
-            return await _context.Tours.FindAsync(id);
+            return await _context.Tours.Include(t => t.TransportBookings).ThenInclude(tb => tb.Transport).Include(t => t.LodgingBookings).ThenInclude(lb => lb.Lodging).FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<List<Tour>> GetToursAsync(int pageNumber, int pageSize)

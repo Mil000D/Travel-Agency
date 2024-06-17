@@ -11,6 +11,9 @@ namespace MASProject.Server.Mappings
         {
             CreateMap<Tour, GetTourDTO>()
                 .ForMember(dest => dest.HeaderPhotoURL, opt => opt.MapFrom(src => src.ImagesURL.FirstOrDefault() ?? string.Empty));
+
+            CreateMap<Tour, UpdateTourDTO>()
+                .ReverseMap();
         }
     }
 }
