@@ -33,12 +33,22 @@ namespace MASProject.Server.DAL.TourRepositories
             return await _context.Tours.Include(t => t.TransportBookings).ThenInclude(tb => tb.Transport).Include(t => t.LodgingBookings).ThenInclude(lb => lb.Lodging).FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task<List<Tour>> GetToursAsync(int pageNumber, int pageSize)
+        public async Task<(List<Tour>, int)> GetToursAndToursCountAsync(int pageNumber, int pageSize, string? search = null, DateTime? startDate = null, DateTime? endDate = null)
         {
-            return await _context.Tours
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            var query = _context.Tours.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t => t.Title.Contains(search) || t.Description.Contains(search));
+            }
+
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                query = query.Where(t => t.TransportBookings.Any(tb => tb.DepartureTime >= startDate && tb.ArrivalTime <= endDate));
+            }
+            var queryResult = await query
+                    .Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            return (queryResult, await query.CountAsync());
         }
 
         public async Task<int> GetToursCountAsync()

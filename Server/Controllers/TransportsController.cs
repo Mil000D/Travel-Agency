@@ -15,7 +15,7 @@ namespace MASProject.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTransports()
         {
-            return Ok(await _transportService.GetTransportsAsync());
+            return Ok(await _transportService.GetTransportDTOsAsync());
         }
     }
 }

@@ -4,6 +4,6 @@ namespace MASProject.Server.Services.TransportServices
 {
     public interface ITransportService
     {
-        public Task<List<TransportDTO>> GetTransportsAsync();
+        public Task<List<TransportDTO>> GetTransportDTOsAsync();
     }
 }

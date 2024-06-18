@@ -29,15 +29,21 @@ else
     </EditForm>
 }
 @code {
-    private List<TransportDTO>? _transports;
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-    Func<TransportDTO, string?>? converter = p => p?.Name;
+    [Parameter]
+    public TransportBookingDTO TransportBookingDTO { get; set; } = new TransportBookingDTO();
+    
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter] public TransportBookingDTO TransportBookingDTO { get; set; } = new TransportBookingDTO();
+    private List<TransportDTO>? _transports;
+
+    private Func<TransportDTO, string?>? converter = p => p?.Name;
+
     protected override async Task OnInitializedAsync()
     {
         _transports = await HttpClient.GetFromJsonAsync<List<TransportDTO>>("api/transports");
     }
+
     private void Save()
     {
         MudDialog.Close(DialogResult.Ok(TransportBookingDTO));

@@ -1,6 +1,9 @@
 ﻿@page "/"
+@using System.Globalization
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 @if (_tours == null)
 {
@@ -8,79 +11,96 @@
         <MudProgressCircular Indeterminate="true" />
     </MudElement>
 }
-else if (_tours.Count() == 0)
-{
-    <MudElement Class="d-flex justify-center">
-        <MudAlert Elevation="20" Severity="Severity.Error">No tours</MudAlert>
-    </MudElement>
-}
 else
 {
     <MudElement Class="d-flex flex-column justify-space-between" Style="height: 100vh;">
         <MudElement Class="flex-grow-1">
             <MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-content-center">
-                <MudPaper Class="pa-4 mt-3" Elevation="20">
+                <MudPaper Square="false" Class="pr-10 pl-10 pb-4 pt-4 mt-3 rounded-pill" Elevation="20">
                     <MudGrid Justify="Justify.Center" Class="align-items-center">
-                        <MudItem xs="12" md="3">
-                            <MudTextField @bind-Value="TextValue" Placeholder="Where to?" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+                        <MudItem Class="d-flex align-items-center justify-content-center" xs="12" md="3">
+                            <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="_search" Placeholder="Where to?" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
                         </MudItem>
-                        <MudItem xs="6" md="2">
-                            <MudDatePicker Label="Check in" @bind-Date="_checkInDate" />
-                        </MudItem>
-                        <MudItem xs="6" md="2">
-                            <MudDatePicker Label="Check out" @bind-Date="_checkOutDate" />
-                        </MudItem>
-                        <MudItem xs="12" md="2" Class="d-flex align-items-center justify-content-center">
+                        <MudDateRangePicker Clearable="true" Variant="Variant.Outlined" MinDate="DateTime.Now.Date" PlaceholderStart="Start Date" PlaceholderEnd="End Date" PickerVariant="PickerVariant.Dialog" @bind-DateRange="@_dateRange" Margin="Margin.Dense" />
+                        <MudItem Class="d-flex align-items-center justify-content-center" xs="12" md="2">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Search">Search</MudButton>
                         </MudItem>
                     </MudGrid>
                 </MudPaper>
             </MudContainer>
-
-            <MudElement Class="gap-x-6 gap-y-6 d-flex flex-wrap justify-space-around mt-4">
-                @foreach (var tour in _tours)
-                {
-                    <MudElement Class="zoom-card">
-                        <MudCard Elevation="20" Style="width:290px;" Class="cursor-pointer" @onclick="@(() => NavigateToTourDetails(tour.Id))">
-                            <MudCardMedia Image="@tour.HeaderPhotoURL" Height="200" />
-                            <MudCardContent Style="min-height:50px;">
-                                <MudText Typo="Typo.h6">@tour.Title</MudText>
-                                <MudText Typo="Typo.body2">@tour.Description</MudText>
-                            </MudCardContent>
-                            <MudCardActions Class="d-flex justify-content-center gap-2">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => NavigateToUpdateTour(tour.Id))">Update</MudButton>
-                                <MudButton Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
-                            </MudCardActions>
-                        </MudCard>
-                    </MudElement>
-                }
+            @if (_tours.Count() == 0)
+            {
+                <MudElement Class="d-flex justify-center">
+                    <MudAlert Elevation="20" Severity="Severity.Error">No tours</MudAlert>
+                </MudElement>
+            }
+            else 
+            {
+                <MudElement Class="gap-x-6 gap-y-6 d-flex flex-wrap justify-space-around mt-4">
+                    @foreach (var tour in _tours)
+                    {
+                        <MudElement Class="zoom-card">
+                            <MudCard Elevation="20" Style="width:290px;" Class="cursor-pointer" @onclick="@(() => NavigateToTourDetails(tour.Id))">
+                                <MudCardMedia Image="@tour.HeaderPhotoURL" Height="200" />
+                                <MudCardContent Style="min-height:50px;">
+                                    <MudText Typo="Typo.h6">@tour.Title</MudText>
+                                    <MudText Typo="Typo.body2">@tour.Description</MudText>
+                                </MudCardContent>
+                                <MudCardActions Class="d-flex justify-content-center gap-2">
+                                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => NavigateToUpdateTour(tour.Id))">Update</MudButton>
+                                    <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => ConfirmDeleteTourAsync(tour.Id))">Delete</MudButton>
+                                </MudCardActions>
+                            </MudCard>
+                        </MudElement>
+                    }
+                </MudElement>
+            }
+        </MudElement>
+        @if (_tours.Count() > 0)
+        {
+            <MudElement Class="mt-4">
+                <MudContainer Class="d-flex justify-content-center mb-4">
+                    <MudPagination Count="_pagesCount" SelectedChanged="OnPageChangedAsync"/>
+                </MudContainer>
             </MudElement>
-        </MudElement>
-
-        <MudElement Class="mt-4">
-            <MudContainer Class="d-flex justify-content-center mb-4">
-                <MudPagination Count="_pagesCount" SelectedChanged="OnPageChanged"/>
-            </MudContainer>
-        </MudElement>
+        }
     </MudElement>
 }
+<MudFab Class="fixed bottom-0 end-0 ma-10" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
 
 @code {
-    private DateTime? _checkInDate;
-    private DateTime? _checkOutDate;
-    public string TextValue { get; set; }
-
+    private DateRange? _dateRange;
+    private string? _search;
     private int _currentPage = 1;
     private int _itemsPerPage = 8;
     private int _pagesCount;
-    private void Search()
-    {
-        // Implement search logic here
-    }
 
     private List<GetTourDTO>? _tours;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadToursAsync();
+    }
+
+    private async Task LoadToursAsync()
+    {
+        string? startDate = _dateRange?.Start?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        string? endDate = _dateRange?.End?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var allTours = await HttpClient.GetFromJsonAsync<GetAllToursDTO>($"api/tours?pageNumber={_currentPage}&pageSize={_itemsPerPage}&search={_search}&startDate={startDate}&endDate={endDate}");
+        if(allTours != null)
+        {
+            _tours = allTours.Tours;
+            _pagesCount = (int)Math.Ceiling(allTours.ToursCount / (double)_itemsPerPage);            
+        }
+    }
+
+    private async Task OnPageChangedAsync(int page)
+    {
+        _currentPage = page;
+        await LoadToursAsync();
+    }
+
+    private async Task Search()
     {
         await LoadToursAsync();
     }
@@ -94,16 +114,30 @@ else
     {
         NavigationManager.NavigateTo($"/update-tour/{idTour}");
     }
-    private async Task LoadToursAsync()
+
+    private async Task ConfirmDeleteTourAsync(int idTour)
     {
-        _tours = await HttpClient.GetFromJsonAsync<List<GetTourDTO>>($"api/tours?pageNumber={_currentPage}&pageSize={_itemsPerPage}");
-        var toursCount = await HttpClient.GetFromJsonAsync<int>("api/tours/count");
-        _pagesCount = (int)Math.Ceiling(toursCount / (double)_itemsPerPage);
-    }
-    private async Task OnPageChanged(int page)
-    {
-        _currentPage = page;
-        Console.WriteLine($"Page changed to {_currentPage}");
-        await LoadToursAsync();
+
+        var parameters = new DialogParameters
+        {
+            { "Message", "Are you sure you want to delete this tour?" }
+        };
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Tour", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            var response = await HttpClient.DeleteAsync($"api/tours/{idTour}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadToursAsync();
+            }
+            else
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add("Failed to delete tour", Severity.Error);
+            }
+        }
     }
 }

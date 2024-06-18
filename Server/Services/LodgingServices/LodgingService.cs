@@ -13,7 +13,7 @@ namespace MASProject.Server.Services.LodgingServices
             _lodgingRepository = lodgingRepository;
             _mapper = mapper;
         }
-        public async Task<List<LodgingDTO>> GetLodgingsAsync()
+        public async Task<List<LodgingDTO>> GetLodgingDTOsAsync()
         {
             var lodgings = await _lodgingRepository.GetLodgingsAsync();
             return _mapper.Map<List<LodgingDTO>>(lodgings);

@@ -9,8 +9,11 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-    [Parameter] public string Message { get; set; } = "Are you sure you want to delete this item?";
+    [Parameter]
+    public string Message { get; set; } = "Are you sure you want to delete this item?";
+
+    [CascadingParameter] 
+    public MudDialogInstance MudDialog { get; set; } = null!;
 
     private void ConfirmDelete()
     {

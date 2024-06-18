@@ -11,7 +11,8 @@
     </MudDialog>
 </EditForm>
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    [CascadingParameter] 
+    public MudDialogInstance MudDialog { get; set; } = null!;
 
     private ImageDTO _imageDTO = new ImageDTO();
 

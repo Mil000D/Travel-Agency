@@ -4,6 +4,6 @@ namespace MASProject.Server.Services.LodgingServices
 {
     public interface ILodgingService
     {
-        public Task<List<LodgingDTO>> GetLodgingsAsync();
+        public Task<List<LodgingDTO>> GetLodgingDTOsAsync();
     }
 }

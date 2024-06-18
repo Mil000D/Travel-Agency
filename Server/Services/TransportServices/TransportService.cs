@@ -14,7 +14,7 @@ namespace MASProject.Server.Services.TransportServices
             _transportRepository = transportRepository;
             _mapper = mapper;
         }
-        public async Task<List<TransportDTO>> GetTransportsAsync()
+        public async Task<List<TransportDTO>> GetTransportDTOsAsync()
         {
             var transports = await _transportRepository.GetTransportsAsync();
             return _mapper.Map<List<TransportDTO>>(transports);

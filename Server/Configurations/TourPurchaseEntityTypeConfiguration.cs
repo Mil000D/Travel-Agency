@@ -44,6 +44,46 @@ namespace MASProject.Server.Configurations
                     PaymentMethod = Enums.PaymentMethod.BLIK,
                     PaymentDate = new DateOnly(2024, 8, 3),
                     TourStatus = Enums.TourStatus.Booked
+                },
+                new TourPurchase
+                {
+                    TourId = 4,
+                    CustomerId = 4,
+                    PaymentMethod = Enums.PaymentMethod.Card,
+                    PaymentDate = new DateOnly(2024, 7, 4),
+                    TourStatus = Enums.TourStatus.Booked
+                },
+                new TourPurchase
+                {
+                    TourId = 5,
+                    CustomerId = 4,
+                    PaymentMethod = Enums.PaymentMethod.Cash,
+                    PaymentDate = new DateOnly(2024, 8, 5),
+                    TourStatus = Enums.TourStatus.Booked
+                },
+                new TourPurchase
+                {
+                    TourId = 6,
+                    CustomerId = 3,
+                    PaymentMethod = Enums.PaymentMethod.BLIK,
+                    PaymentDate = new DateOnly(2024, 9, 6),
+                    TourStatus = Enums.TourStatus.Booked
+                },
+                new TourPurchase
+                {
+                    TourId = 7,
+                    CustomerId = 2,
+                    PaymentMethod = Enums.PaymentMethod.Card,
+                    PaymentDate = new DateOnly(2024, 10, 7),
+                    TourStatus = Enums.TourStatus.Booked
+                },
+                new TourPurchase
+                {
+                    TourId = 8,
+                    CustomerId = 1,
+                    PaymentMethod = Enums.PaymentMethod.Cash,
+                    PaymentDate = new DateOnly(2024, 11, 8),
+                    TourStatus = Enums.TourStatus.Booked
                 }
             );
         }

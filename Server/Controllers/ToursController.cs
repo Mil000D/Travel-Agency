@@ -15,22 +15,16 @@ namespace MASProject.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTours([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 8)
+        public async Task<IActionResult> GetTours([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 8, [FromQuery] string? search = null, [FromQuery] string? startDate = null, [FromQuery] string? endDate = null)
         {
-            var tours = await _tourService.GetToursAsync(pageNumber, pageSize);
+            GetAllToursDTO tours = await _tourService.GetTourDTOsAndToursCountAsync(pageNumber, pageSize, search, startDate, endDate);
             return Ok(tours);
-        }
-        [HttpGet("count")]
-        public async Task<IActionResult> GetToursCount()
-        {
-            var count = await _tourService.GetToursCountAsync();
-            return Ok(count);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUpdateTour(int id)
         {
-            var tour = await _tourService.GetUpdateTourAsync(id);
+            var tour = await _tourService.GetUpdateTourDTOAsync(id);
             return Ok(tour);
         }
 
@@ -38,6 +32,13 @@ namespace MASProject.Server.Controllers
         public async Task<IActionResult> UpdateTour([FromBody] UpdateTourDTO tour)
         {
             await _tourService.UpdateTourAsync(tour);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTour(int id)
+        {
+            await _tourService.DeleteTourAsync(id);
             return Ok();
         }
 

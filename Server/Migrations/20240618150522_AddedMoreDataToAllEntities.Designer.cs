@@ -3,6 +3,7 @@ using System;
 using MASProject.Server.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MASProject.Server.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240618150522_AddedMoreDataToAllEntities")]
+    partial class AddedMoreDataToAllEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.20");
@@ -238,6 +241,7 @@ namespace MASProject.Server.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Price")
+                        .HasPrecision(2)
                         .HasColumnType("REAL");
 
                     b.Property<string>("RoomType")
@@ -409,7 +413,6 @@ namespace MASProject.Server.Migrations
                             Id = 1,
                             Description = "Discover the lesser-traveled depths of Antelope Canyon on a walking tour through the lower portions of this colorful sandstone slot canyon.",
                             ImagesURL = "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/7f/67/da.jpg https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/90/31/4c/caption.jpg https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/8f/68/c5/caption.jpg https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/8f/68/ca/caption.jpg",
-                            Popularity = 1,
                             Title = "Lower Antelope Canyon"
                         },
                         new
@@ -417,7 +420,6 @@ namespace MASProject.Server.Migrations
                             Id = 2,
                             Description = "Discover the highlights of several cities in the Northeast on this 4-day sightseeing tour by bus or minivan from Boston.",
                             ImagesURL = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0d/46/b6/9c/20161010-133807-largejpg.jpg https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/7d/1f/18/photo3jpg.jpg https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d4/be/31/view-from-one-of-the_rotated_90.jpg",
-                            Popularity = 1,
                             Title = "Niagara Falls"
                         },
                         new
@@ -425,7 +427,6 @@ namespace MASProject.Server.Migrations
                             Id = 3,
                             Description = "Ideal for travelers short on time, this tour covers the Grand Canyon’s South Rim in one day of sightseeing from Las Vegas.",
                             ImagesURL = "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0a/9a/19/33.jpg https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0a/9a/19/3e.jpg",
-                            Popularity = 1,
                             Title = "Grand Canyon"
                         },
                         new
@@ -433,7 +434,6 @@ namespace MASProject.Server.Migrations
                             Id = 4,
                             Description = "Journey to Horseshoe Bend on a guided tour that includes all your entrance fees, round-trip transport from Flagstaff, and a picnic lunch.",
                             ImagesURL = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/56/c1/06/horseshoe-bend-az.jpg",
-                            Popularity = 1,
                             Title = "Horseshoe Bend"
                         },
                         new
@@ -441,7 +441,6 @@ namespace MASProject.Server.Migrations
                             Id = 5,
                             Description = "This man-made reservoir, located in northern Arizona and southern Utah, is a great spot for travelers seeking nature and outdoor adventure.",
                             ImagesURL = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/91/5b/02/morning-at-the-lake-powell.jpg",
-                            Popularity = 1,
                             Title = "Lake Powell"
                         },
                         new
@@ -449,7 +448,6 @@ namespace MASProject.Server.Migrations
                             Id = 6,
                             Description = "Avoid crowds and maximize your wildlife-viewing experience on this private Yellowstone tour led by a naturalist guide.",
                             ImagesURL = "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/10/8e/af/dd.jpg",
-                            Popularity = 1,
                             Title = "Yellowstone Tour"
                         },
                         new
@@ -457,7 +455,6 @@ namespace MASProject.Server.Migrations
                             Id = 7,
                             Description = "Immerse yourself in the majestic beauty of Yosemite National Park on this 2-day overnight adventure from San Francisco. Great way to spend holidays.",
                             ImagesURL = "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0b/2b/8a/7e.jpg",
-                            Popularity = 1,
                             Title = "Yosemite Valley"
                         },
                         new
@@ -465,7 +462,6 @@ namespace MASProject.Server.Migrations
                             Id = 8,
                             Description = "Explore the Incredible Narrows portion of Zion National Park without the risk of getting lost on this private full-day tour. A fun day out for travelers.",
                             ImagesURL = "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/0f/2c/ff/9e.jpg",
-                            Popularity = 1,
                             Title = "The Narrows"
                         },
                         new
@@ -545,46 +541,6 @@ namespace MASProject.Server.Migrations
                             PaymentDate = new DateOnly(2024, 8, 3),
                             PaymentMethod = 0,
                             TourStatus = 1
-                        },
-                        new
-                        {
-                            TourId = 4,
-                            CustomerId = 4,
-                            PaymentDate = new DateOnly(2024, 7, 4),
-                            PaymentMethod = 2,
-                            TourStatus = 1
-                        },
-                        new
-                        {
-                            TourId = 5,
-                            CustomerId = 4,
-                            PaymentDate = new DateOnly(2024, 8, 5),
-                            PaymentMethod = 1,
-                            TourStatus = 1
-                        },
-                        new
-                        {
-                            TourId = 6,
-                            CustomerId = 3,
-                            PaymentDate = new DateOnly(2024, 9, 6),
-                            PaymentMethod = 0,
-                            TourStatus = 1
-                        },
-                        new
-                        {
-                            TourId = 7,
-                            CustomerId = 2,
-                            PaymentDate = new DateOnly(2024, 10, 7),
-                            PaymentMethod = 2,
-                            TourStatus = 1
-                        },
-                        new
-                        {
-                            TourId = 8,
-                            CustomerId = 1,
-                            PaymentDate = new DateOnly(2024, 11, 8),
-                            PaymentMethod = 1,
-                            TourStatus = 1
                         });
                 });
 
@@ -657,6 +613,7 @@ namespace MASProject.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<float>("Price")
+                        .HasPrecision(2)
                         .HasColumnType("REAL");
 
                     b.HasKey("TourId", "TransportId");
@@ -1007,44 +964,6 @@ namespace MASProject.Server.Migrations
                     b.HasBaseType("MASProject.Server.Models.UserModels.User");
 
                     b.HasDiscriminator().HasValue("Admin");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 5,
-                            BirthDate = new DateOnly(1, 1, 1),
-                            Name = "Ryan",
-                            Password = "password",
-                            Surname = "Doe",
-                            Username = "adminryan"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BirthDate = new DateOnly(1, 1, 1),
-                            Name = "Jack",
-                            Password = "password",
-                            Surname = "Doe",
-                            Username = "admindoe"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            BirthDate = new DateOnly(1, 1, 1),
-                            Name = "Alice",
-                            Password = "password",
-                            Surname = "Doe",
-                            Username = "adminalice"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            BirthDate = new DateOnly(1, 1, 1),
-                            Name = "Ethan",
-                            Password = "password",
-                            Surname = "Smith",
-                            Username = "adminethan"
-                        });
                 });
 
             modelBuilder.Entity("MASProject.Server.Models.UserModels.Customer", b =>

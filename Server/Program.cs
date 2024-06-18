@@ -1,7 +1,6 @@
 using MASProject.Server.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using MASProject.Server.Extensions;
-using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 

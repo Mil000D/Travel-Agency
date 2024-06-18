@@ -16,7 +16,7 @@ namespace MASProject.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetLodgings()
         {
-            return Ok(await _lodgingService.GetLodgingsAsync());
+            return Ok(await _lodgingService.GetLodgingDTOsAsync());
         }
     }
 }

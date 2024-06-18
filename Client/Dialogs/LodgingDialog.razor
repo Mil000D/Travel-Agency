@@ -29,15 +29,20 @@ else
     </EditForm>
 }
 @code {
+    [Parameter]
+    public LodgingBookingDTO LodgingBookingDTO { get; set; } = new LodgingBookingDTO();
+    
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
     private List<LodgingDTO>? _lodgings;
-    Func<LodgingDTO, string?> converter = p => p?.Name;
+
+    private Func<LodgingDTO, string?> converter = p => p?.Name;
+
     protected override async Task OnInitializedAsync()
     {
         _lodgings = await HttpClient.GetFromJsonAsync<List<LodgingDTO>>("api/lodgings");
     }
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-
-    [Parameter] public LodgingBookingDTO LodgingBookingDTO { get; set; } = new LodgingBookingDTO();
 
     private void Save()
     {
