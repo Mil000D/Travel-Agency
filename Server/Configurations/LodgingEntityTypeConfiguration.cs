@@ -147,7 +147,6 @@ namespace MASProject.Server.Configurations
                     Email = "zion@gmail.com",
                     LodgingType = LodgingType.Hotel
                 },
-                // Lodging for bryce canyon
                 new Lodging
                 {
                     Id = 8,

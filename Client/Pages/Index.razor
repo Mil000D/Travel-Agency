@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using System.Globalization
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
@@ -7,8 +6,8 @@
 
 @if (_tours == null)
 {
-    <MudElement Class="d-flex justify-center">
-        <MudProgressCircular Indeterminate="true" />
+    <MudElement Class="d-flex justify-content-center align-items-center vh-100">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     </MudElement>
 }
 else
@@ -23,15 +22,15 @@ else
                         </MudItem>
                         <MudDateRangePicker Clearable="true" Variant="Variant.Outlined" MinDate="DateTime.Now.Date" PlaceholderStart="Start Date" PlaceholderEnd="End Date" PickerVariant="PickerVariant.Dialog" @bind-DateRange="@_dateRange" Margin="Margin.Dense" />
                         <MudItem Class="d-flex align-items-center justify-content-center" xs="12" md="2">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@Search">Search</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchAsync">Search</MudButton>
                         </MudItem>
                     </MudGrid>
                 </MudPaper>
             </MudContainer>
             @if (_tours.Count() == 0)
             {
-                <MudElement Class="d-flex justify-center">
-                    <MudAlert Elevation="20" Severity="Severity.Error">No tours</MudAlert>
+                <MudElement Class="d-flex justify-center mt-16">
+                    <MudAlert Elevation="20" Severity="Severity.Error">No tours were found</MudAlert>
                 </MudElement>
             }
             else 
@@ -100,7 +99,7 @@ else
         await LoadToursAsync();
     }
 
-    private async Task Search()
+    private async Task SearchAsync()
     {
         await LoadToursAsync();
     }
@@ -126,18 +125,23 @@ else
         var dialog = await DialogService.ShowAsync<DeleteDialog>("Delete Tour", parameters, options);
         var result = await dialog.Result;
 
-        if (!result.Canceled)
+        if (result.Canceled)
         {
-            var response = await HttpClient.DeleteAsync($"api/tours/{idTour}");
-            if (response.IsSuccessStatusCode)
+            return;
+        }
+        var response = await HttpClient.DeleteAsync($"api/tours/{idTour}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (_tours?.Count() == 1 && _currentPage > 1)
             {
-                await LoadToursAsync();
+                _currentPage--;
             }
-            else
-            {
-                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add("Failed to delete tour", Severity.Error);
-            }
+            await LoadToursAsync();
+        }
+        else
+        {
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Failed to delete tour", Severity.Error);
         }
     }
 }

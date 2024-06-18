@@ -9,13 +9,13 @@ else
         <DataAnnotationsValidator />
         <MudDialog>
             <DialogContent>
-                <MudSelect For="@(() => LodgingBookingDTO.Lodging)" T="LodgingDTO" @bind-Value="@LodgingBookingDTO.Lodging" ToStringFunc="@converter" Label="Select Lodging" OpenIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Secondary" Required="true">
+                <MudSelect For="@(() => LodgingBookingDTO.Lodging)" T="LodgingDTO" @bind-Value="@LodgingBookingDTO.Lodging" ToStringFunc="@converter" Label="Select Lodging" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Apartment" AdornmentColor="Color.Dark" Required="true">
                     @foreach (LodgingDTO item in _lodgings)
                     {
                         <MudSelectItem Value="@item">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
-                <MudTextField For="@(() => LodgingBookingDTO.RoomType)" @bind-Value="LodgingBookingDTO.RoomType" Label="Room Type" Required="true" />
+                <MudTextField For="@(() => LodgingBookingDTO.RoomType)" @bind-Value="LodgingBookingDTO.RoomType" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Hotel" AdornmentColor="Color.Dark" Label="Room Type" Required="true" />
                 <MudTextField For="@(() => LodgingBookingDTO.MaxCapacity)" @bind-Value="LodgingBookingDTO.MaxCapacity" Label="Max Capacity" InputType="InputType.Number" Adornment="Adornment.End" AdornmentColor="Color.Dark" AdornmentIcon="@Icons.Material.Filled.Groups" Required="true" />
                 <MudTextField For="@(() => LodgingBookingDTO.Price)" @bind-Value="LodgingBookingDTO.Price" Label="Price" Adornment="Adornment.End" AdornmentColor="Color.Dark" AdornmentText="zł" Required="true" />
                 <MudTextField For="@(() => LodgingBookingDTO.CheckInDate)" T="DateTime?" Format="yyyy-MM-dd" @bind-Value="LodgingBookingDTO.CheckInDate" Label="Check-In Date" InputType="InputType.Date" Required="true" />

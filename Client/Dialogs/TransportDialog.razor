@@ -9,15 +9,15 @@ else
     <DataAnnotationsValidator />
         <MudDialog>
             <DialogContent>
-                <MudSelect For="@(() => TransportBookingDTO.Transport)" T="TransportDTO" @bind-Value="TransportBookingDTO.Transport" ToStringFunc="@converter" Label="Select Transport" HelperText="Enum" OpenIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Secondary" Required="true">
+                <MudSelect For="@(() => TransportBookingDTO.Transport)" T="TransportDTO" @bind-Value="TransportBookingDTO.Transport" ToStringFunc="@converter" Label="Select Transport" HelperText="Enum" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Dark" Required="true">
                     @foreach (TransportDTO item in _transports)
                     {
                         <MudSelectItem Value="@item">@item.Name</MudSelectItem>
                     }
                 </MudSelect>
-                <MudTextField For="@(() => TransportBookingDTO.Origin)" @bind-Value="TransportBookingDTO.Origin" Label="Origin" Required="true" Immediate="true" />
-                <MudTextField For="@(() => TransportBookingDTO.Destination)" @bind-Value="TransportBookingDTO.Destination" Label="Destination" Required="true" Immediate="true" />
-                <MudTextField For="@(() => TransportBookingDTO.Price)" @bind-Value="TransportBookingDTO.Price" Label="Price" Required="true" />
+                <MudTextField For="@(() => TransportBookingDTO.Origin)" @bind-Value="TransportBookingDTO.Origin" Label="Origin" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.MyLocation" AdornmentColor="Color.Dark" Required="true" Immediate="true" />
+                <MudTextField For="@(() => TransportBookingDTO.Destination)" @bind-Value="TransportBookingDTO.Destination" Label="Destination" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.LocationOn" AdornmentColor="Color.Dark" Required="true" Immediate="true" />
+                <MudTextField For="@(() => TransportBookingDTO.Price)" @bind-Value="TransportBookingDTO.Price" Label="Price" Adornment="Adornment.End" AdornmentText="zł" AdornmentColor="Color.Dark" Required="true" />
                 <MudTextField For="@(() => TransportBookingDTO.DepartureTime)" T="DateTime?" @bind-Value="TransportBookingDTO.DepartureTime" Format="s" Label="Departure Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
                 <MudTextField For="@(() => TransportBookingDTO.ArrivalTime)" T="DateTime?" @bind-Value="TransportBookingDTO.ArrivalTime" Format="s" Label="Arrival Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
             </DialogContent>

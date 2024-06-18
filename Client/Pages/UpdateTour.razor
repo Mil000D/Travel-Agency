@@ -7,8 +7,8 @@
 <PageTitle>Update Tour</PageTitle>
 @if (_updateTourDTO == null)
 {
-    <MudElement Class="d-flex justify-content-center">
-        <MudProgressCircular Indeterminate="true" />
+    <MudElement Class="d-flex justify-content-center align-items-center vh-100">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
     </MudElement>
 }
 else
@@ -199,7 +199,7 @@ else
     {
         var parameters = new DialogParameters();
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-        var dialog = await DialogService.ShowAsync<ImageDialog>("Add New Image", parameters, options);
+        var dialog = await DialogService.ShowAsync<ImageDialog>("Add Image", parameters, options);
         var result = await dialog.Result;
 
         if (!result.Canceled)

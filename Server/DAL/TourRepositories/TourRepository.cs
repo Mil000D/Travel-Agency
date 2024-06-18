@@ -30,7 +30,9 @@ namespace MASProject.Server.DAL.TourRepositories
 
         public async Task<Tour?> GetTourAsync(int id)
         {
-            return await _context.Tours.Include(t => t.TransportBookings).ThenInclude(tb => tb.Transport).Include(t => t.LodgingBookings).ThenInclude(lb => lb.Lodging).FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Tours.Include(t => t.TransportBookings).ThenInclude(tb => tb.Transport)
+                .Include(t => t.LodgingBookings).ThenInclude(lb => lb.Lodging)
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<(List<Tour>, int)> GetToursAndToursCountAsync(int pageNumber, int pageSize, string? search = null, DateTime? startDate = null, DateTime? endDate = null)
@@ -39,7 +41,7 @@ namespace MASProject.Server.DAL.TourRepositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(t => t.Title.Contains(search) || t.Description.Contains(search));
+                query = query.Where(t => t.Title.ToLower().Contains(search.ToLower()) || t.Description.ToLower().Contains(search.ToLower()));
             }
 
             if (startDate.HasValue && endDate.HasValue)

@@ -36,7 +36,7 @@ namespace MASProject.Shared.SharedValidators
 
             var comparisonValue = DateConverter.ConvertToDateTime(comparisonProperty.GetValue(validationContext.ObjectInstance));
 
-            if (currentValue == null || comparisonValue == null)
+            if (currentValue == null)
             {
                 return new ValidationResult("Invalid date value.", new[] { validationContext.DisplayName });
             }
