@@ -1,5 +1,4 @@
 ﻿using MASProject.Shared.SharedConverters;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Shared.SharedValidators
@@ -39,17 +38,17 @@ namespace MASProject.Shared.SharedValidators
 
             if (currentValue == null || comparisonValue == null)
             {
-                return new ValidationResult("Invalid date value.");
+                return new ValidationResult("Invalid date value.", new[] { validationContext.DisplayName });
             }
 
             if (_comparisonType == ComparisonType.After && currentValue >= comparisonValue)
             {
-                return new ValidationResult($"The field {validationContext.DisplayName} cannot be after {comparisonValue}.");
+                return new ValidationResult($"The field {validationContext.DisplayName} cannot be after {comparisonValue}.", new[] { validationContext.DisplayName });
             }
 
             if (_comparisonType == ComparisonType.Before && currentValue <= comparisonValue)
             {
-                return new ValidationResult($"The field {validationContext.DisplayName} cannot be before {comparisonValue}.");
+                return new ValidationResult($"The field {validationContext.DisplayName} cannot be before {comparisonValue}.", new[] { validationContext.DisplayName });
             }
 
             return ValidationResult.Success;

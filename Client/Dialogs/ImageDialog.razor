@@ -2,10 +2,10 @@
 <DataAnnotationsValidator />
     <MudDialog>
         <DialogContent>
-            <MudTextField For="(() => _imageDTO.ImageURL)" @bind-Value="_imageDTO.ImageURL" Label="Image URL" FullWidth="true" Required="true" />
+            <MudTextField For="@(() => _imageDTO.ImageURL)" @bind-Value="_imageDTO.ImageURL" Label="Image URL" FullWidth="true" Required="true" />
         </DialogContent>
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Submit</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Submit</MudButton>
             <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
         </DialogActions>
     </MudDialog>

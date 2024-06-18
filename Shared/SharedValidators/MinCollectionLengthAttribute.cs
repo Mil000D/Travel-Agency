@@ -18,8 +18,7 @@ namespace MASProject.Shared.SharedValidators
             {
                 return ValidationResult.Success;
             }
-
-            return new ValidationResult($"The collection must contain at least {_minLength} elements.");
+            return new ValidationResult($"The collection must contain at least {_minLength} elements.", new[] { validationContext.DisplayName });
         }
     }
 }

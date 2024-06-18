@@ -14,7 +14,6 @@ namespace MASProject.Server.Models.TourModels
         [Required]
         [StringLength(1000, MinimumLength = 1)]
         public string Description { get; set; } = null!;
-        [Range(1, int.MaxValue)]
         public int? Popularity { get; set; }
         [Required]
         [MinCollectionLength(1)]

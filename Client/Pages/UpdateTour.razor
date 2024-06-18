@@ -1,4 +1,4 @@
-﻿@page "/update-tour"
+﻿@page "/update-tour/{IdTour:int}"
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
@@ -7,25 +7,9 @@
 <PageTitle>Update Tour</PageTitle>
 @if (_updateTourDTO == null)
 {
-    <MudCard>
-        <MudCardHeader>
-            <CardHeaderAvatar>
-                <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="40px" Width="40px" />
-            </CardHeaderAvatar>
-            <CardHeaderContent>
-                <MudSkeleton Animation="Animation.Wave" Width="40%" />
-                <MudSkeleton Animation="Animation.Wave" Width="60%" />
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Height="500px" Width="500"/>
-        <MudCardContent>
-            <MudSkeleton Animation="Animation.Wave" />
-        </MudCardContent>
-        <MudCardActions>
-            <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="30px" Width="30px" Class="ml-2 mb-2" />
-            <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="30px" Width="30px" Class="ml-3 mb-2" />
-        </MudCardActions>
-    </MudCard>
+    <MudElement Class="d-flex justify-content-center">
+        <MudProgressCircular Indeterminate="true" />
+    </MudElement>
 }
 else
 {
@@ -35,7 +19,7 @@ else
         <MudText Typo="Typo.h4" Class="mb-4">Update Tour</MudText>
             <MudPaper Class="p-4" Elevation="20">
                 <MudTextField @bind-Value="_updateTourDTO.Title" Label="Title" For="@(() => _updateTourDTO.Title)" Required="true" />
-                <MudTextField @bind-Value="_updateTourDTO.Description" Label="Description" For="@(() => _updateTourDTO.Description)" Lines="5" Required="true" />
+                <MudTextField AutoGrow MaxLines="5" @bind-Value="_updateTourDTO.Description" Label="Description" For="@(() => _updateTourDTO.Description)" Required="true" />
                 <MudText Typo="Typo.h6" Class="mt-4">Images*</MudText>
                 <MudElement Class="d-flex flex-wrap">
                     @foreach (var imageUrl in _updateTourDTO.ImagesURL)
@@ -115,19 +99,19 @@ else
 }
 @code {
     [Parameter]
-    public int TourId { get; set; }
+    public int IdTour { get; set; }
     private MudTheme Theme = new MudTheme();
 
     private UpdateTourDTO? _updateTourDTO;
 
     protected override async Task OnInitializedAsync()
     {
-        _updateTourDTO = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/1");
+        _updateTourDTO = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/{IdTour}");
     }
 
     private async Task HandleValidSubmitAsync()
     {
-        var response = await HttpClient.PutAsJsonAsync($"api/tours/{TourId}", _updateTourDTO);
+        var response = await HttpClient.PutAsJsonAsync($"api/tours", _updateTourDTO);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         if (response.IsSuccessStatusCode)
         {
@@ -170,9 +154,9 @@ else
         }
         if (transportBooking != null)
         {
-            _updateTourDTO.TransportBookings.Remove(transportBooking);
+            _updateTourDTO?.TransportBookings.Remove(transportBooking);
         }
-        _updateTourDTO.TransportBookings.Add(updatedTransportBooking);
+        _updateTourDTO?.TransportBookings.Add(updatedTransportBooking);
     }
 
     private async Task OpenLodgingDialogAsync(LodgingBookingDTO? lodgingBooking = null)
@@ -205,9 +189,9 @@ else
         }
         if (lodgingBooking != null)
         {
-            _updateTourDTO.LodgingBookings.Remove(lodgingBooking);
+            _updateTourDTO?.LodgingBookings.Remove(lodgingBooking);
         }
-        _updateTourDTO.LodgingBookings.Add(updatedTransportBooking);
+        _updateTourDTO?.LodgingBookings.Add(updatedTransportBooking);
     }
 
 
@@ -223,14 +207,14 @@ else
             var newImageUrl = result.Data as string;
             if (newImageUrl != null)
             {
-                _updateTourDTO.ImagesURL.Add(newImageUrl);
+                _updateTourDTO?.ImagesURL.Add(newImageUrl);
             }
         }
     }
 
     private async Task ConfirmDeleteTransportAsync(TransportBookingDTO transport)
     {
-        if (_updateTourDTO.TransportBookings.Count <= 1)
+        if (_updateTourDTO?.TransportBookings.Count <= 1)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("You cannot delete the last transport.", Severity.Error);
@@ -247,13 +231,13 @@ else
 
         if (!result.Canceled)
         {
-            _updateTourDTO.TransportBookings.Remove(transport);
+            _updateTourDTO?.TransportBookings.Remove(transport);
         }
     }
 
     private async Task ConfirmDeleteLodgingAsync(LodgingBookingDTO lodging)
     {
-        if (_updateTourDTO.LodgingBookings.Count <= 1)
+        if (_updateTourDTO?.LodgingBookings.Count <= 1)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("You cannot delete the last lodging.", Severity.Error);
@@ -270,13 +254,13 @@ else
 
         if (!result.Canceled)
         {
-            _updateTourDTO.LodgingBookings.Remove(lodging);
+            _updateTourDTO?.LodgingBookings.Remove(lodging);
         }
     }
 
     private async Task ConfirmDeleteImageAsync(string imageUrl)
     {
-        if (_updateTourDTO.ImagesURL.Count <= 1)
+        if (_updateTourDTO?.ImagesURL.Count <= 1)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("You cannot delete the last image.", Severity.Error);
@@ -292,7 +276,7 @@ else
 
         if (!result.Canceled)
         {
-            _updateTourDTO.ImagesURL.Remove(imageUrl);
+            _updateTourDTO?.ImagesURL.Remove(imageUrl);
         }
     }
 }

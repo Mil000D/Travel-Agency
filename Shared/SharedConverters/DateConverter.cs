@@ -16,5 +16,22 @@
 
             return null;
         }
+        public static DateOnly ConvertToDateOnly(object? value)
+        {
+            if (value is DateTime?)
+            {
+                value = (DateTime) value;
+            }
+            if(value is DateTime dateTime)
+            {
+                return DateOnly.FromDateTime(dateTime);
+            }
+            if (value is DateOnly dateOnly)
+            {
+                return dateOnly;
+            }
+
+            return DateOnly.MinValue;
+        }
     }
 }

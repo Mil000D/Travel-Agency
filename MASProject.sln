@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASProject.Client", "Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASProject.Shared", "Shared\MASProject.Shared.csproj", "{765F1B90-B9E8-4B36-A55F-B35B98D6DB92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASProject.Tests", "Tests\MASProject.Tests.csproj", "{CD5761AF-7BCB-457B-B6B1-E75D51BFEC6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASProject.Tests", "Tests\MASProject.Tests.csproj", "{CD5761AF-7BCB-457B-B6B1-E75D51BFEC6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

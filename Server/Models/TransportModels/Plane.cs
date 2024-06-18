@@ -13,5 +13,9 @@ namespace MASProject.Server.Models.TransportModels
         [AmenityValidation]
         [MinCollectionLength(1)]
         public List<string> Amenities { get; set; } = null!;
+        public override string ToString()
+        {
+            return $"{Company} (Plane - {Model})";
+        }
     }
 }

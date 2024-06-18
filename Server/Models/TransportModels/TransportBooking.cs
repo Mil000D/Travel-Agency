@@ -8,9 +8,10 @@ namespace MASProject.Server.Models.TransportModels
 {
     public class TransportBooking : Booking
     {
-        public int TransportId { get; set; }
         [Required]
+        public int TransportId { get; set; }
         public Transport Transport { get; set; } = null!;
+        [Required]
         public int TourId { get; set; }
         [Required]
         public Tour Tour { get; set; } = null!;
@@ -22,11 +23,11 @@ namespace MASProject.Server.Models.TransportModels
         public string Destination { get; set; } = null!;
         [Required]
         [FutureDateValidation]
-        [IntervalDateValidation(nameof(ArrivalTime), IntervalDateValidationAttribute.ComparisonType.Before)]
+        [IntervalDateValidation(nameof(ArrivalTime), IntervalDateValidationAttribute.ComparisonType.After)]
         public DateTime DepartureTime { get; set; }
         [Required]
         [FutureDateValidation]
-        [IntervalDateValidation(nameof(DepartureTime), IntervalDateValidationAttribute.ComparisonType.After)]
+        [IntervalDateValidation(nameof(DepartureTime), IntervalDateValidationAttribute.ComparisonType.Before)]
         public DateTime ArrivalTime { get; set; }
     }
 }

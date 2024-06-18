@@ -26,7 +26,7 @@ namespace MASProject.Shared.SharedValidators
  
             if (imageUrls == null || imageUrls.Count == 0)
             {
-                return new ValidationResult("The ImagesURL field is required.");
+                return new ValidationResult("The ImagesURL field is required.", new[] { validationContext.DisplayName });
             }
 
             foreach (var url in imageUrls)
@@ -38,13 +38,13 @@ namespace MASProject.Shared.SharedValidators
 
                 if (url.Any(char.IsWhiteSpace))
                 {
-                    return new ValidationResult($"Invalid URL: {url}. Image URLs cannot contain whitespace.");
+                    return new ValidationResult($"Invalid URL: {url}. Image URLs cannot contain whitespace.", new[] { validationContext.DisplayName });
                 }
 
                 if (!_validExtensions.Any(ext => url.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
                 {
                     string allowedExtensions = string.Join(", ", _validExtensions);
-                    return new ValidationResult($"Invalid image extension for URL: {url}. Only {allowedExtensions} are allowed.");
+                    return new ValidationResult($"Invalid image extension for URL: {url}. Only {allowedExtensions} are allowed.", new[] { validationContext.DisplayName });
                 }
             }
 

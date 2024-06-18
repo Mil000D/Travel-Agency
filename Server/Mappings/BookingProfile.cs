@@ -13,13 +13,22 @@ namespace MASProject.Server.Mappings
         {
             CreateMap<Booking, BookingDTO>()
                 .Include<TransportBooking, TransportBookingDTO>()
-                .Include<LodgingBooking, LodgingBookingDTO>();
-
-            CreateMap<TransportBooking, TransportBookingDTO>();
-            CreateMap<LodgingBooking, LodgingBookingDTO>()
-                .ForMember(dest => dest.CheckInDate, opt => opt.MapFrom(src => DateConverter.ConvertToDateTime(src.CheckInDate)))
-                .ForMember(dest => dest.CheckOutDate, opt => opt.MapFrom(src => DateConverter.ConvertToDateTime(src.CheckOutDate)))
+                .Include<LodgingBooking, LodgingBookingDTO>()
                 .ReverseMap();
+
+            CreateMap<TransportBooking, TransportBookingDTO>()
+                .ReverseMap()
+                .ForPath(model => model.TransportId, opt => opt.MapFrom(dto => dto.Transport.Id))
+                .ForPath(model => model.Transport, opt => opt.Ignore());
+            
+            CreateMap<LodgingBooking, LodgingBookingDTO>()
+                .ForMember(dto => dto.CheckInDate, opt => opt.MapFrom(model => DateConverter.ConvertToDateTime(model.CheckInDate)))
+                .ForMember(dto => dto.CheckOutDate, opt => opt.MapFrom(model => DateConverter.ConvertToDateTime(model.CheckOutDate)))
+                .ReverseMap()
+                .ForPath(model => model.LodgingId, opt => opt.MapFrom(dto => dto.Lodging.Id))
+                .ForPath(model => model.Lodging, opt => opt.Ignore())
+                .ForPath(model => model.CheckInDate, opt => opt.MapFrom(dto => DateConverter.ConvertToDateOnly(dto.CheckInDate)))
+                .ForPath(model => model.CheckOutDate, opt => opt.MapFrom(dto => DateConverter.ConvertToDateOnly(dto.CheckOutDate)));
         }
     }
 }

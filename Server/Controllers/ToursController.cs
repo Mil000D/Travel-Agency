@@ -1,4 +1,5 @@
 ﻿using MASProject.Server.Services.TourServices;
+using MASProject.Shared.DTOs.UseCaseDTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MASProject.Server.Controllers
@@ -32,5 +33,13 @@ namespace MASProject.Server.Controllers
             var tour = await _tourService.GetUpdateTourAsync(id);
             return Ok(tour);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateTour([FromBody] UpdateTourDTO tour)
+        {
+            await _tourService.UpdateTourAsync(tour);
+            return Ok();
+        }
+
     }
 }

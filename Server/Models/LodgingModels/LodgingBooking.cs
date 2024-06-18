@@ -9,7 +9,6 @@ namespace MASProject.Server.Models.LodgingModels
     {
         [Required]
         public int LodgingId { get; set; }
-        [Required]
         public Lodging Lodging { get; set; } = null!;
         [Required]
         public int TourId { get; set; }

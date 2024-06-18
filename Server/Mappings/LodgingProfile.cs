@@ -8,7 +8,7 @@ namespace MASProject.Server.Mappings
     {
         public LodgingProfile()
         {
-            CreateMap<Lodging, LodgingDTO>().ReverseMap();
+            CreateMap<Lodging, LodgingDTO>();
         }
     }
 }

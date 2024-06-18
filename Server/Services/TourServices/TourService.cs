@@ -44,5 +44,16 @@ namespace MASProject.Server.Services.TourServices
             }
             return _mapper.Map<UpdateTourDTO>(tour);
         }
+
+        public async Task UpdateTourAsync(UpdateTourDTO tour)
+        {
+            var tourModel = await _tourRepository.GetTourAsync(tour.Id);
+            if (tourModel == null)
+            {
+                throw new KeyNotFoundException("Tour not found");
+            }
+            _mapper.Map(tour, tourModel);
+            await _tourRepository.UpdateTourAsync(tourModel);
+        }
     }
 }

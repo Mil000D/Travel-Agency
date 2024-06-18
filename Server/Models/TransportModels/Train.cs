@@ -10,5 +10,9 @@ namespace MASProject.Server.Models.TransportModels
         [Required]
         [Range(1,4)]
         public int Classes { get; set; }
+        public override string ToString()
+        {
+            return $"{Company} (Train - {TrainNumber})";
+        }
     }
 }

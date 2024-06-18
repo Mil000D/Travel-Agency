@@ -11,5 +11,6 @@ namespace MASProject.Server.Services.TourServices
         public Task<UpdateTourDTO> GetUpdateTourAsync(int id);
         public Task<List<GetTourDTO>> GetToursAsync(int pageNumber, int pageSize);
         public Task<int> GetToursCountAsync();
+        public Task UpdateTourAsync(UpdateTourDTO tour);
     }
 }

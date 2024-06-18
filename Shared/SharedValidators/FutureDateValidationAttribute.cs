@@ -16,12 +16,12 @@ namespace MASProject.Shared.SharedValidators
 
             if (dateValue == null)
             {
-                return new ValidationResult("Invalid date value.");
+                return new ValidationResult("Invalid date value.", new[] { validationContext.DisplayName });
             }
 
             if (dateValue < DateTime.Today)
             {
-                return new ValidationResult($"The field {validationContext.DisplayName} cannot be set to date before today.");
+                return new ValidationResult($"The field {validationContext.DisplayName} cannot be set to date before today.", new[] { validationContext.DisplayName });
             }
 
             return ValidationResult.Success;

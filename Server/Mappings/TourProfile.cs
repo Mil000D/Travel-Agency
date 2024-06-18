@@ -10,7 +10,7 @@ namespace MASProject.Server.Mappings
         public TourProfile()
         {
             CreateMap<Tour, GetTourDTO>()
-                .ForMember(dest => dest.HeaderPhotoURL, opt => opt.MapFrom(src => src.ImagesURL.FirstOrDefault() ?? string.Empty));
+                .ForMember(dto => dto.HeaderPhotoURL, opt => opt.MapFrom(model => model.ImagesURL.FirstOrDefault() ?? string.Empty));
 
             CreateMap<Tour, UpdateTourDTO>()
                 .ReverseMap();

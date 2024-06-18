@@ -1,38 +1,43 @@
-﻿<EditForm Model="TransportBookingDTO" OnValidSubmit="Save">
-<DataAnnotationsValidator />
-    <MudDialog>
-        <DialogContent>
-            <MudSelect For="@(() => TransportBookingDTO.Transport)" T="TransportDTO" @bind-Value="TransportBookingDTO.Transport" ToStringFunc="@converter" Label="Select Transport" HelperText="Enum" OpenIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Secondary" Required="true">
-                @foreach (TransportDTO item in transports)
-                {
-                    <MudSelectItem Value="@item">@item.Name</MudSelectItem>
-                }
-            </MudSelect>
-            <MudTextField For="@(() => TransportBookingDTO.Origin)" @bind-Value="TransportBookingDTO.Origin" Label="Origin" Required="true" Immediate="true" />
-            <MudTextField For="@(() => TransportBookingDTO.Destination)" @bind-Value="TransportBookingDTO.Destination" Label="Destination" Required="true" Immediate="true" />
-            <MudTextField For="@(() => TransportBookingDTO.Price)" @bind-Value="TransportBookingDTO.Price" Label="Price" Required="true" />
-            <MudTextField For="@(() => TransportBookingDTO.DepartureTime)" T="DateTime?" @bind-Value="TransportBookingDTO.DepartureTime" Format="s" Label="Departure Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
-            <MudTextField For="@(() => TransportBookingDTO.ArrivalTime)" T="DateTime?" @bind-Value="TransportBookingDTO.ArrivalTime" Format="s" Label="Arrival Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
-        </DialogContent>
-        <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
-            <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
-        </DialogActions>
-    </MudDialog>
-</EditForm>
-
+﻿@inject HttpClient HttpClient
+@if (TransportBookingDTO == null || _transports == null || _transports.Count == 0)
+{
+    <DialogSkeleton />
+}
+else
+{
+    <EditForm Model="TransportBookingDTO" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+        <MudDialog>
+            <DialogContent>
+                <MudSelect For="@(() => TransportBookingDTO.Transport)" T="TransportDTO" @bind-Value="TransportBookingDTO.Transport" ToStringFunc="@converter" Label="Select Transport" HelperText="Enum" OpenIcon="@Icons.Material.Filled.AirportShuttle" AdornmentColor="Color.Secondary" Required="true">
+                    @foreach (TransportDTO item in _transports)
+                    {
+                        <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudTextField For="@(() => TransportBookingDTO.Origin)" @bind-Value="TransportBookingDTO.Origin" Label="Origin" Required="true" Immediate="true" />
+                <MudTextField For="@(() => TransportBookingDTO.Destination)" @bind-Value="TransportBookingDTO.Destination" Label="Destination" Required="true" Immediate="true" />
+                <MudTextField For="@(() => TransportBookingDTO.Price)" @bind-Value="TransportBookingDTO.Price" Label="Price" Required="true" />
+                <MudTextField For="@(() => TransportBookingDTO.DepartureTime)" T="DateTime?" @bind-Value="TransportBookingDTO.DepartureTime" Format="s" Label="Departure Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
+                <MudTextField For="@(() => TransportBookingDTO.ArrivalTime)" T="DateTime?" @bind-Value="TransportBookingDTO.ArrivalTime" Format="s" Label="Arrival Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
+            </DialogContent>
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
 @code {
-    private List<TransportDTO> transports = new List<TransportDTO>()
-    {
-        new TransportDTO { Id = 1, Name = "Bus" },
-        new TransportDTO { Id = 2, Name = "Train" },
-        new TransportDTO { Id = 3, Name = "Flight" },
-    };
+    private List<TransportDTO>? _transports;
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
-    Func<TransportDTO, string>? converter = p => p?.Name;
+    Func<TransportDTO, string?>? converter = p => p?.Name;
 
     [Parameter] public TransportBookingDTO TransportBookingDTO { get; set; } = new TransportBookingDTO();
-
+    protected override async Task OnInitializedAsync()
+    {
+        _transports = await HttpClient.GetFromJsonAsync<List<TransportDTO>>("api/transports");
+    }
     private void Save()
     {
         MudDialog.Close(DialogResult.Ok(TransportBookingDTO));

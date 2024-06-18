@@ -9,8 +9,7 @@ namespace MASProject.Server.Mappings
         public TransportProfile()
         {
             CreateMap<Transport, TransportDTO>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.TransportType.ToString()))
-                .ReverseMap();
+                .ForMember(dto => dto.Name, opt => opt.MapFrom(model => model.ToString()));
         }
     }
 }
