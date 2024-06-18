@@ -1,28 +1,23 @@
-﻿<MudDialog>
-    <DialogContent>
-        <MudTextField @bind-Value="imageUrl" Label="Image URL" FullWidth="true" Required="true" />
-    </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Submit</MudButton>
-        <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
-    </DialogActions>
-</MudDialog>
-
+﻿<EditForm Model="_imageDTO" OnValidSubmit="Submit">
+<DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudTextField For="(() => _imageDTO.ImageURL)" @bind-Value="_imageDTO.ImageURL" Label="Image URL" FullWidth="true" Required="true" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit">Submit</MudButton>
+            <MudButton Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
 
-    private string imageUrl;
+    private ImageDTO _imageDTO = new ImageDTO();
 
     private void Submit()
     {
-        if (!string.IsNullOrEmpty(imageUrl))
-        {
-            MudDialog.Close(DialogResult.Ok(imageUrl));
-        }
-        else
-        {
-            MudDialog.Close(DialogResult.Cancel());
-        }
+        MudDialog.Close(DialogResult.Ok(_imageDTO.ImageURL));
     }
 
     private void Cancel()

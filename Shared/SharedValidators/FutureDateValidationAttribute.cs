@@ -21,7 +21,7 @@ namespace MASProject.Shared.SharedValidators
 
             if (dateValue < DateTime.Today)
             {
-                return new ValidationResult($"{validationContext.DisplayName} cannot be before today.");
+                return new ValidationResult($"The field {validationContext.DisplayName} cannot be set to date before today.");
             }
 
             return ValidationResult.Success;

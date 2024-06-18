@@ -14,6 +14,7 @@ namespace MASProject.Server.Models.TransportModels
         [StringLength(50, MinimumLength = 1)]
         public string Company { get; set; } = null!;
         [Required]
+        [Range(1, int.MaxValue)]
         public int Capacity { get; set; }
         [LandTransportValidation]
         public bool? AirConditioning { get; set; }

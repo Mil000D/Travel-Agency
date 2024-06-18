@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Shared.DTOs.UseCaseDTOs
 {
-    public class TransportBookingDTO
+    public class TransportBookingDTO : BookingDTO
     {
-        public int Id { get; set; }
         [Required]
         public TransportDTO Transport { get; set; } = null!;
         [Required]
@@ -16,14 +15,11 @@ namespace MASProject.Shared.DTOs.UseCaseDTOs
         public string Destination { get; set; } = null!;
         [Required]
         [FutureDateValidation]
-        [IntervalDateValidation(nameof(ArrivalTime), IntervalDateValidationAttribute.ComparisonType.Before)]
+        [IntervalDateValidation(nameof(ArrivalTime), IntervalDateValidationAttribute.ComparisonType.After)]
         public DateTime? DepartureTime { get; set; }
         [Required]
         [FutureDateValidation]
-        [IntervalDateValidation(nameof(DepartureTime), IntervalDateValidationAttribute.ComparisonType.After)]
+        [IntervalDateValidation(nameof(DepartureTime), IntervalDateValidationAttribute.ComparisonType.Before)]
         public DateTime? ArrivalTime { get; set; }
-        [Required]
-        [Range(1f, float.MaxValue)]
-        public float Price { get; set; }
     }
 }

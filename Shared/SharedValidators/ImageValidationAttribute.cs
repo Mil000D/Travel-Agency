@@ -13,8 +13,17 @@ namespace MASProject.Shared.SharedValidators
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            var imageUrls = value as List<string>;
+            List<string>? imageUrls = null;
 
+            if (value is string singleUrl)
+            {
+                imageUrls = new List<string> { singleUrl };
+            }
+            else if (value is List<string> urlList)
+            {
+                imageUrls = urlList;
+            }
+ 
             if (imageUrls == null || imageUrls.Count == 0)
             {
                 return new ValidationResult("The ImagesURL field is required.");

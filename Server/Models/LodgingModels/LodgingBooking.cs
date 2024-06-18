@@ -19,6 +19,7 @@ namespace MASProject.Server.Models.LodgingModels
         [StringLength(50, MinimumLength = 3)]
         public string RoomType { get; set; } = null!;
         [Required]
+        [Range(1, int.MaxValue)]    
         public int MaxCapacity { get; set; }
         [Required]
         [FutureDateValidation]

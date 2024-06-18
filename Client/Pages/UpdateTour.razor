@@ -5,18 +5,40 @@
 @inject IDialogService DialogService
 
 <PageTitle>Update Tour</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h4" Class="mb-4">Update Tour</MudText>
-    @if (tour != null)
-    {
-        <MudPaper Class="p-4" Elevation="20">
-            <MudForm @ref="form" OnValidSubmit="HandleValidSubmit">
-                <MudTextField @bind-Value="tour.Title" Label="Title" Required="true" />
-                <MudTextField @bind-Value="tour.Description" Label="Description" Lines="5" Required="true" />
+@if (_updateTourDTO == null)
+{
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderAvatar>
+                <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="40px" Width="40px" />
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <MudSkeleton Animation="Animation.Wave" Width="40%" />
+                <MudSkeleton Animation="Animation.Wave" Width="60%" />
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Animation="Animation.Wave" Height="500px" Width="500"/>
+        <MudCardContent>
+            <MudSkeleton Animation="Animation.Wave" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="30px" Width="30px" Class="ml-2 mb-2" />
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Animation="Animation.Wave" Height="30px" Width="30px" Class="ml-3 mb-2" />
+        </MudCardActions>
+    </MudCard>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large">
+        <EditForm Model="@_updateTourDTO" OnValidSubmit="HandleValidSubmitAsync">
+        <DataAnnotationsValidator/>
+        <MudText Typo="Typo.h4" Class="mb-4">Update Tour</MudText>
+            <MudPaper Class="p-4" Elevation="20">
+                <MudTextField @bind-Value="_updateTourDTO.Title" Label="Title" For="@(() => _updateTourDTO.Title)" Required="true" />
+                <MudTextField @bind-Value="_updateTourDTO.Description" Label="Description" For="@(() => _updateTourDTO.Description)" Lines="5" Required="true" />
                 <MudText Typo="Typo.h6" Class="mt-4">Images*</MudText>
                 <MudElement Class="d-flex flex-wrap">
-                    @foreach (var imageUrl in tour.ImagesURL)
+                    @foreach (var imageUrl in _updateTourDTO.ImagesURL)
                     {
                         <MudElement Class="m-2">
                             <MudPaper Class="pa-2" Elevation="10">
@@ -36,7 +58,7 @@
                         <MudPaper Class="mud-theme-primary pa-4">
                             <MudText Class="mb-2" Typo="Typo.h6">Transports*</MudText>
                             <MudElement Class="row">
-                                @foreach (var transportBooking in tour.TransportBookings)
+                                @foreach (var transportBooking in _updateTourDTO.TransportBookings)
                                 {
                                     <MudElement Class="col-12 col-sm-6 mb-3 zoom-card">
                                         <MudPaper Class="p-2" Elevation="10">
@@ -60,7 +82,7 @@
                         <MudPaper Class="mud-theme-primary pa-4">
                             <MudText Class="mb-2" Typo="Typo.h6">Lodgings*</MudText>
                             <MudElement Class="row">
-                                @foreach (var lodgingBooking in tour.LodgingBookings)
+                                @foreach (var lodgingBooking in _updateTourDTO.LodgingBookings)
                                 {
                                     <MudElement Class="col-12 col-sm-6 mb-3 zoom-card">
                                         <MudPaper Class="p-2" Elevation="10">
@@ -85,29 +107,27 @@
                 </MudElement>
                 <MudDivider Class="my-2" Light="true" />
                 <MudElement Class="d-flex justify-content-center">
-                    <MudFab Class="mt-4" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Style="color: white;" Label="Update Tour" />
+                    <MudFab Class="mt-4" ButtonType="ButtonType.Submit" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Style="color: white;" Label="Update Tour" />
                 </MudElement>
-            </MudForm>
-        </MudPaper>
-    }
-</MudContainer>
-
+            </MudPaper>
+        </EditForm>
+    </MudContainer>
+}
 @code {
     [Parameter]
     public int TourId { get; set; }
     private MudTheme Theme = new MudTheme();
 
-    private UpdateTourDTO tour;
-    private MudForm form;
+    private UpdateTourDTO? _updateTourDTO;
 
     protected override async Task OnInitializedAsync()
     {
-        tour = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/1");
+        _updateTourDTO = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/1");
     }
 
-    private async Task HandleValidSubmit()
+    private async Task HandleValidSubmitAsync()
     {
-        var response = await HttpClient.PutAsJsonAsync($"api/tours/{TourId}", tour);
+        var response = await HttpClient.PutAsJsonAsync($"api/tours/{TourId}", _updateTourDTO);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         if (response.IsSuccessStatusCode)
         {
@@ -124,12 +144,12 @@
     {
         var parameters = new DialogParameters
         {
-            { "TransportBooking", transportBooking == null ? new TransportBookingDTO() : new TransportBookingDTO 
+            { "TransportBookingDTO", transportBooking == null ? new TransportBookingDTO() : new TransportBookingDTO
                 {
-                    Id = transportBooking.Id,
                     Transport = new TransportDTO { Id = transportBooking.Transport.Id, Name = transportBooking.Transport.Name },
                     Origin = transportBooking.Origin,
                     Destination = transportBooking.Destination,
+                    Price = transportBooking.Price,
                     DepartureTime = transportBooking.DepartureTime,
                     ArrivalTime = transportBooking.ArrivalTime,
                 }
@@ -144,27 +164,27 @@
             return;
         }
         var updatedTransportBooking = result.Data as TransportBookingDTO;
-        if(updatedTransportBooking == null)
+        if (updatedTransportBooking == null)
         {
             return;
         }
-        if (transportBooking != null && updatedTransportBooking.Id != 0)
+        if (transportBooking != null)
         {
-            tour.TransportBookings.Remove(transportBooking);
+            _updateTourDTO.TransportBookings.Remove(transportBooking);
         }
-        tour.TransportBookings.Add(updatedTransportBooking);
+        _updateTourDTO.TransportBookings.Add(updatedTransportBooking);
     }
 
     private async Task OpenLodgingDialogAsync(LodgingBookingDTO? lodgingBooking = null)
     {
         var parameters = new DialogParameters
         {
-            { "LodgingBooking", lodgingBooking == null ? new LodgingBookingDTO() : new LodgingBookingDTO
+            { "LodgingBookingDTO", lodgingBooking == null ? new LodgingBookingDTO() : new LodgingBookingDTO
                 {
-                    Id = lodgingBooking.Id,
                     Lodging = new LodgingDTO { Id = lodgingBooking.Lodging.Id, Name = lodgingBooking.Lodging.Name },
                     RoomType = lodgingBooking.RoomType,
                     MaxCapacity = lodgingBooking.MaxCapacity,
+                    Price = lodgingBooking.Price,
                     CheckInDate = lodgingBooking.CheckInDate,
                     CheckOutDate = lodgingBooking.CheckOutDate,
                 }
@@ -183,11 +203,11 @@
         {
             return;
         }
-        if (lodgingBooking != null && updatedTransportBooking.Id != 0)
+        if (lodgingBooking != null)
         {
-            tour.LodgingBookings.Remove(lodgingBooking);
+            _updateTourDTO.LodgingBookings.Remove(lodgingBooking);
         }
-        tour.LodgingBookings.Add(updatedTransportBooking);
+        _updateTourDTO.LodgingBookings.Add(updatedTransportBooking);
     }
 
 
@@ -203,14 +223,14 @@
             var newImageUrl = result.Data as string;
             if (newImageUrl != null)
             {
-                tour.ImagesURL.Add(newImageUrl);
+                _updateTourDTO.ImagesURL.Add(newImageUrl);
             }
         }
     }
 
     private async Task ConfirmDeleteTransportAsync(TransportBookingDTO transport)
     {
-        if (tour.TransportBookings.Count <= 1)
+        if (_updateTourDTO.TransportBookings.Count <= 1)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("You cannot delete the last transport.", Severity.Error);
@@ -227,13 +247,13 @@
 
         if (!result.Canceled)
         {
-            tour.TransportBookings.Remove(transport);
+            _updateTourDTO.TransportBookings.Remove(transport);
         }
     }
 
     private async Task ConfirmDeleteLodgingAsync(LodgingBookingDTO lodging)
     {
-        if (tour.LodgingBookings.Count <= 1)
+        if (_updateTourDTO.LodgingBookings.Count <= 1)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("You cannot delete the last lodging.", Severity.Error);
@@ -250,13 +270,13 @@
 
         if (!result.Canceled)
         {
-            tour.LodgingBookings.Remove(lodging);
+            _updateTourDTO.LodgingBookings.Remove(lodging);
         }
     }
 
     private async Task ConfirmDeleteImageAsync(string imageUrl)
     {
-        if (tour.ImagesURL.Count <= 1)
+        if (_updateTourDTO.ImagesURL.Count <= 1)
         {
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("You cannot delete the last image.", Severity.Error);
@@ -272,7 +292,7 @@
 
         if (!result.Canceled)
         {
-            tour.ImagesURL.Remove(imageUrl);
+            _updateTourDTO.ImagesURL.Remove(imageUrl);
         }
     }
 }

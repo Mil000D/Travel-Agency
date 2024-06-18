@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Shared.DTOs.UseCaseDTOs
 {
-    public class LodgingBookingDTO
+    public class LodgingBookingDTO : BookingDTO
     {
-        public int Id { get; set; }
         [Required]
         public LodgingDTO Lodging { get; set; } = null!;
         [Required]
         [StringLength(50, MinimumLength = 3)]
         public string RoomType { get; set; } = null!;
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "The field MaxCapacity must be positive.")]
         public int MaxCapacity { get; set; }
         [Required]
         [FutureDateValidation]
@@ -21,8 +21,5 @@ namespace MASProject.Shared.DTOs.UseCaseDTOs
         [FutureDateValidation]
         [IntervalDateValidation(nameof(CheckInDate), IntervalDateValidationAttribute.ComparisonType.Before)]
         public DateTime? CheckOutDate { get; set; }
-        [Required]
-        [Range(1f, float.MaxValue)]
-        public float Price { get; set; }
     }
 }

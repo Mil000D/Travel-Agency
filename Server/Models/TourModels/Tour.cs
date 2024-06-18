@@ -14,13 +14,14 @@ namespace MASProject.Server.Models.TourModels
         [Required]
         [StringLength(1000, MinimumLength = 1)]
         public string Description { get; set; } = null!;
+        [Range(1, int.MaxValue)]
         public int? Popularity { get; set; }
         [Required]
         [MinCollectionLength(1)]
         [ImageValidation(new[] {".jpg", ".png"})]
         public List<string> ImagesURL { get; set; } = null!;
         public ICollection<TourPurchase>? TourPurchases { get; set; }
-        public ICollection<LodgingBooking>? LodgingBookings { get; set; } = new List<LodgingBooking>();
-        public ICollection<TransportBooking>? TransportBookings { get; set; } = new List<TransportBooking>();
+        public ICollection<LodgingBooking>? LodgingBookings { get; set; }
+        public ICollection<TransportBooking>? TransportBookings { get; set; }
     }
 }

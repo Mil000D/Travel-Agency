@@ -44,12 +44,12 @@ namespace MASProject.Shared.SharedValidators
 
             if (_comparisonType == ComparisonType.After && currentValue >= comparisonValue)
             {
-                return new ValidationResult($"{validationContext.DisplayName} cannot be after {comparisonValue}.");
+                return new ValidationResult($"The field {validationContext.DisplayName} cannot be after {comparisonValue}.");
             }
 
             if (_comparisonType == ComparisonType.Before && currentValue <= comparisonValue)
             {
-                return new ValidationResult($"{validationContext.DisplayName} cannot be before {comparisonValue}.");
+                return new ValidationResult($"The field {validationContext.DisplayName} cannot be before {comparisonValue}.");
             }
 
             return ValidationResult.Success;
