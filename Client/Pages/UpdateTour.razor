@@ -14,7 +14,7 @@
 else
 {
     <MudContainer MaxWidth="MaxWidth.Large">
-        <EditForm Model="@_updateTourDTO" OnValidSubmit="HandleValidSubmitAsync">
+        <EditForm Model="@_updateTourDTO" OnValidSubmit="HandleValidSubmitAsync" OnInvalidSubmit="HandleInvalidSubmit">
         <DataAnnotationsValidator/>
         <MudText Typo="Typo.h4" Class="mb-4">Update Tour</MudText>
             <MudPaper Class="p-4" Elevation="20">
@@ -100,15 +100,20 @@ else
 @code {
     [Parameter]
     public int IdTour { get; set; }
-    private MudTheme Theme = new MudTheme();
 
     private UpdateTourDTO? _updateTourDTO;
 
+    /// <summary>
+    /// Called when the component is initialized.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         _updateTourDTO = await HttpClient.GetFromJsonAsync<UpdateTourDTO>($"api/tours/{IdTour}");
     }
 
+    /// <summary>
+    /// Handles the form submission when the data is valid.
+    /// </summary>
     private async Task HandleValidSubmitAsync()
     {
         var response = await HttpClient.PutAsJsonAsync($"api/tours", _updateTourDTO);
@@ -124,6 +129,18 @@ else
         }
     }
 
+    /// <summary>
+    /// Handles the form submission when the data is invalid.
+    /// </summary>
+    private void HandleInvalidSubmit()
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Invalid data. Please check the form.", Severity.Error);
+    }
+
+    /// <summary>
+    /// Opens the dialog for adding or updating a transport booking.
+    /// </summary>
     private async Task OpenTransportDialogAsync(TransportBookingDTO? transportBooking = null)
     {
         var parameters = new DialogParameters
@@ -137,7 +154,8 @@ else
                     DepartureTime = transportBooking.DepartureTime,
                     ArrivalTime = transportBooking.ArrivalTime,
                 }
-            }
+            },
+            { "InitialTransports", _updateTourDTO?.TransportBookings.Select(tb => tb.Transport).ToList() }
         };
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = await DialogService.ShowAsync<TransportDialog>(transportBooking == null ? "Add Transport" : "Update Transport", parameters, options);
@@ -159,6 +177,10 @@ else
         _updateTourDTO?.TransportBookings.Add(updatedTransportBooking);
     }
 
+    /// <summary>
+    /// Opens the dialog for adding or updating a lodging booking.
+    /// </summary>
+    /// <param name="lodgingBooking">The lodging booking to update. If null, a new lodging booking will be created.</param>
     private async Task OpenLodgingDialogAsync(LodgingBookingDTO? lodgingBooking = null)
     {
         var parameters = new DialogParameters
@@ -172,7 +194,8 @@ else
                     CheckInDate = lodgingBooking.CheckInDate,
                     CheckOutDate = lodgingBooking.CheckOutDate,
                 }
-            }
+            },
+            { "InitialLodgings", _updateTourDTO?.LodgingBookings.Select(tb => tb.Lodging).ToList() }
         };
         var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = await DialogService.ShowAsync<LodgingDialog>(lodgingBooking == null ? "Add Lodging" : "Update Lodging", parameters, options);
@@ -182,7 +205,9 @@ else
         {
             return;
         }
+
         var updatedTransportBooking = result.Data as LodgingBookingDTO;
+
         if (updatedTransportBooking == null)
         {
             return;
@@ -194,7 +219,9 @@ else
         _updateTourDTO?.LodgingBookings.Add(updatedTransportBooking);
     }
 
-
+    /// <summary>
+    /// Opens the dialog for adding a new image URL.
+    /// </summary>
     private async Task OpenAddImageDialogAsync()
     {
         var parameters = new DialogParameters();
@@ -212,6 +239,10 @@ else
         }
     }
 
+    /// <summary>
+    /// Confirms the deletion of a transport booking.
+    /// </summary>
+    /// <param name="transport">The transport booking to delete.</param>
     private async Task ConfirmDeleteTransportAsync(TransportBookingDTO transport)
     {
         if (_updateTourDTO?.TransportBookings.Count <= 1)
@@ -235,6 +266,10 @@ else
         }
     }
 
+    /// <summary>
+    /// Confirms the deletion of a lodging booking.
+    /// </summary>
+    /// <param name="lodging">The lodging booking to delete.</param>
     private async Task ConfirmDeleteLodgingAsync(LodgingBookingDTO lodging)
     {
         if (_updateTourDTO?.LodgingBookings.Count <= 1)
@@ -258,6 +293,10 @@ else
         }
     }
 
+    /// <summary>
+    /// Confirms the deletion of an image URL.
+    /// </summary>
+    /// <param name="imageUrl">The image URL to delete.</param>
     private async Task ConfirmDeleteImageAsync(string imageUrl)
     {
         if (_updateTourDTO?.ImagesURL.Count <= 1)

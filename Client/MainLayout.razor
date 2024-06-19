@@ -22,14 +22,7 @@
         <MudText Typo="Typo.h5" Class="cursor-pointer" @onclick="@((e) => NavigationManager.NavigateTo("/"))"><b>&nbsp&nbspDream Destinations&nbsp&nbsp</b></MudText>
         <MudIcon Icon="@Icons.Material.Filled.FlightTakeoff" Size="Size.Medium" />
         <MudSpacer />
-        @if (NavigationManager.Uri.Contains("/login"))
-        {
-            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" @onclick="@OnRegisterClick">Register</MudButton>
-        }
-        else
-        {
-            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Login" Color="Color.Primary" @onclick="@OnLoginClick">Login</MudButton>
-        }
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Logout" Color="Color.Primary">Logout</MudButton>
     </MudAppBar>
     <MudMainContent>
         <MudElement Class="d-flex justify-center align-center ma-2 pa-2">
@@ -43,28 +36,18 @@
 @code {
     private string language = "English";
     private MudTheme MyCustomTheme = new MudTheme()
+    {
+        Palette = new PaletteLight()
         {
-            Palette = new PaletteLight()
-            {
-                Primary = Colors.Green.Default,
-                Secondary = Colors.Shades.White,
-                Background = Colors.Shades.White,
-                Surface = Colors.Shades.White,
-                AppbarBackground = Colors.Green.Default,
-                AppbarText = Colors.Shades.White,
-                DrawerBackground = Colors.Green.Default,
-                DrawerText = Colors.Shades.White,
-                DrawerIcon = Colors.Shades.White
-            }
-        };
-
-    private void OnLoginClick()
-    {
-        NavigationManager.NavigateTo("/login");
-    }
-
-    private void OnRegisterClick()
-    {
-        NavigationManager.NavigateTo("/register");
-    }
+            Primary = Colors.Green.Default,
+            Secondary = Colors.Shades.White,
+            Background = Colors.Shades.White,
+            Surface = Colors.Shades.White,
+            AppbarBackground = Colors.Green.Default,
+            AppbarText = Colors.Shades.White,
+            DrawerBackground = Colors.Green.Default,
+            DrawerText = Colors.Shades.White,
+            DrawerIcon = Colors.Shades.White
+        }
+    };
 }

@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Server.ModelValidators.LodgingValidators
 {
+    /// <summary>
+    /// Custom validation attribute to validate properties specific to Hotel.
+    /// </summary>
     public class HotelValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

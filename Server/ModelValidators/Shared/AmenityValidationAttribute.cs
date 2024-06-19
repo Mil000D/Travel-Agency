@@ -2,6 +2,9 @@
 
 namespace MASProject.Server.ModelValidators.Shared
 {
+    /// <summary>
+    /// Custom validation attribute to validate a list of amenities.
+    /// </summary>
     public class AmenityValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

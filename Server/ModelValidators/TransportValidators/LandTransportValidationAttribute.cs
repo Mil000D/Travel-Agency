@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Server.Validators.TransportValidators
 {
+    /// <summary>
+    /// Custom validation attribute to validate properties specific to Land transport.
+    /// </summary>
     public class LandTransportValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

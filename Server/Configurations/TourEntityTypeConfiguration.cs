@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Tour entity type.
+    /// </summary>
     public class TourEntityTypeConfiguration : IEntityTypeConfiguration<Tour>
     {
+        /// <summary>
+        /// Configures the Tour entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Tour entity.</param>
         public void Configure(EntityTypeBuilder<Tour> builder)
         {
             builder.HasKey(t => t.Id);

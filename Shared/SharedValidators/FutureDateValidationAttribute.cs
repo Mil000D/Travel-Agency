@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Shared.SharedValidators
 {
+    /// <summary>
+    /// Custom validation attribute to check if a date is in the future.
+    /// </summary>
     public class FutureDateValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

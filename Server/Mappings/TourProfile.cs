@@ -1,12 +1,17 @@
 ﻿using AutoMapper;
 using MASProject.Server.Models.TourModels;
 using MASProject.Shared.DTOs.TourDTOs;
-using MASProject.Shared.DTOs.UseCaseDTOs;
 
 namespace MASProject.Server.Mappings
 {
+    /// <summary>
+    /// AutoMapper profile for tour mappings.
+    /// </summary>
     public class TourProfile : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TourProfile"/> class.
+        /// </summary>
         public TourProfile()
         {
             CreateMap<Tour, GetTourDTO>()

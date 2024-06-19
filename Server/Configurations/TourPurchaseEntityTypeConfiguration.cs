@@ -1,12 +1,18 @@
 ﻿using MASProject.Server.Models.TourModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the TourPurchase entity type.
+    /// </summary>
     public class TourPurchaseEntityTypeConfiguration : IEntityTypeConfiguration<TourPurchase>
     {
+        /// <summary>
+        /// Configures the TourPurchase entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the TourPurchase entity.</param>
         public void Configure(EntityTypeBuilder<TourPurchase> builder)
         {
             builder.HasKey(tb => new { tb.TourId, tb.CustomerId });

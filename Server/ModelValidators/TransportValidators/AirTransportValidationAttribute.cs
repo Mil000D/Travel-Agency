@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Server.Validators.TransportValidators
 {
+    /// <summary>
+    /// Custom validation attribute to validate properties specific to Air transport.
+    /// </summary>
     public class AirTransportValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

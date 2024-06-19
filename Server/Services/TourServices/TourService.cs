@@ -1,33 +1,44 @@
 ﻿using AutoMapper;
 using MASProject.Shared.DTOs.TourDTOs;
 using MASProject.Server.DAL.TourRepositories;
-using MASProject.Shared.DTOs.UseCaseDTOs;
 using MASProject.Server.Models.TourModels;
 using System.Globalization;
 
 namespace MASProject.Server.Services.TourServices
 {
+    /// <summary>
+    /// Service class for tour operations.
+    /// </summary>
     public class TourService : ITourService
     {
         private readonly IMapper _mapper;
         private readonly ITourRepository _tourRepository;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TourService"/> class.
+        /// </summary>
+        /// <param name="tourRepository">The tour repository.</param>
+        /// <param name="mapper">The mapper.</param>
         public TourService(ITourRepository tourRepository, IMapper mapper)
         {
             _tourRepository = tourRepository;
             _mapper = mapper;
         }
 
+        /// <inheritdoc />
         public async Task DeleteTourAsync(int id)
         {
             await _tourRepository.DeleteTourAsync(id);
         }
 
+        /// <inheritdoc />
         public async Task<GetTourDTO?> GetTourDTOAsync(int id)
         {
             var tour = await _tourRepository.GetTourAsync(id);
             return _mapper.Map<GetTourDTO?>(tour);
         }
 
+        /// <inheritdoc />
         public async Task<GetAllToursDTO> GetTourDTOsAndToursCountAsync(int pageNumber, int pageSize, string? search = null, string? startDate = null, string? endDate = null)
         {
             DateTime? startDateTime = null;
@@ -44,11 +55,8 @@ namespace MASProject.Server.Services.TourServices
                 ToursCount = count
             };
         }
-        public async Task<int> GetToursCountAsync()
-        {
-            return await _tourRepository.GetToursCountAsync();
-        }
 
+        /// <inheritdoc />
         public async Task<UpdateTourDTO> GetUpdateTourDTOAsync(int id)
         {
             var tour = await _tourRepository.GetTourAsync(id);
@@ -59,6 +67,7 @@ namespace MASProject.Server.Services.TourServices
             return _mapper.Map<UpdateTourDTO>(tour);
         }
 
+        /// <inheritdoc />
         public async Task UpdateTourAsync(UpdateTourDTO tour)
         {
             var tourModel = await _tourRepository.GetTourAsync(tour.Id);

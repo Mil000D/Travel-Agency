@@ -39,7 +39,7 @@ else
                     @foreach (var tour in _tours)
                     {
                         <MudElement Class="zoom-card">
-                            <MudCard Elevation="20" Style="width:290px;" Class="cursor-pointer" @onclick="@(() => NavigateToTourDetails(tour.Id))">
+                            <MudCard Elevation="20" Style="width:290px;" Class="cursor-pointer">
                                 <MudCardMedia Image="@tour.HeaderPhotoURL" Height="200" />
                                 <MudCardContent Style="min-height:50px;">
                                     <MudText Typo="Typo.h6">@tour.Title</MudText>
@@ -76,11 +76,17 @@ else
 
     private List<GetTourDTO>? _tours;
 
+    /// <summary>
+    /// Called when the component is initialized.
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
         await LoadToursAsync();
     }
 
+    /// <summary>
+    /// Loads tours based on the current state.
+    /// </summary>
     private async Task LoadToursAsync()
     {
         string? startDate = _dateRange?.Start?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -93,27 +99,28 @@ else
         }
     }
 
+    /// <summary>
+    /// Called when the page is changed.
+    /// </summary>
+    /// <param name="page">The new page number.</param>
     private async Task OnPageChangedAsync(int page)
     {
         _currentPage = page;
         await LoadToursAsync();
     }
 
+    /// <summary>
+    /// Called when the search button is clicked.
+    /// </summary>
     private async Task SearchAsync()
     {
         await LoadToursAsync();
     }
-
-    private void NavigateToTourDetails(int idTour)
-    {
-        NavigationManager.NavigateTo($"/tour-details");
-    }
-
-    private void NavigateToUpdateTour(int idTour)
-    {
-        NavigationManager.NavigateTo($"/update-tour/{idTour}");
-    }
-
+    
+    /// <summary>
+    /// Confirms the deletion of a tour.
+    /// </summary>
+    /// <param name="idTour">The ID of the tour to delete.</param>
     private async Task ConfirmDeleteTourAsync(int idTour)
     {
 
@@ -143,5 +150,14 @@ else
             Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             Snackbar.Add("Failed to delete tour", Severity.Error);
         }
+    }
+    
+    /// <summary>
+    /// Navigates to the update tour page.
+    /// </summary>
+    /// <param name="idTour">The ID of the tour to update.</param>
+    private void NavigateToUpdateTour(int idTour)
+    {
+        NavigationManager.NavigateTo($"/update-tour/{idTour}");
     }
 }

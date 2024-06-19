@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MASProject.Shared.DTOs.UseCaseDTOs
+namespace MASProject.Shared.DTOs.BookingDTOs
 {
     public abstract class BookingDTO
     {

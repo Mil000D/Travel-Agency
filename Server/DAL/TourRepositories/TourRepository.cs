@@ -4,20 +4,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MASProject.Server.DAL.TourRepositories
 {
+    /// <summary>
+    /// Repository class for tour operations.
+    /// </summary>
     public class TourRepository : ITourRepository
     {
         private readonly MainDbContext _context;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TourRepository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public TourRepository(MainDbContext context)
         {
             _context = context;
         }
 
+        /// <inheritdoc/>
         public async Task AddTourAsync(Tour tour)
         {
             _context.Tours.Add(tour);
             await _context.SaveChangesAsync();
         }
 
+        /// <inheritdoc/>
         public async Task DeleteTourAsync(int id)
         {
             var tour = await GetTourAsync(id);
@@ -28,6 +38,7 @@ namespace MASProject.Server.DAL.TourRepositories
             }
         }
 
+        /// <inheritdoc/>
         public async Task<Tour?> GetTourAsync(int id)
         {
             return await _context.Tours.Include(t => t.TransportBookings).ThenInclude(tb => tb.Transport)
@@ -35,6 +46,7 @@ namespace MASProject.Server.DAL.TourRepositories
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
+        /// <inheritdoc/>
         public async Task<(List<Tour>, int)> GetToursAndToursCountAsync(int pageNumber, int pageSize, string? search = null, DateTime? startDate = null, DateTime? endDate = null)
         {
             var query = _context.Tours.AsQueryable();
@@ -50,14 +62,10 @@ namespace MASProject.Server.DAL.TourRepositories
             }
             var queryResult = await query
                     .Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-            return (queryResult, await query.CountAsync());
+            return (queryResult.OrderBy(t => t.Popularity).ToList(), await query.CountAsync());
         }
 
-        public async Task<int> GetToursCountAsync()
-        {
-            return await _context.Tours.CountAsync();
-        }
-
+        /// <inheritdoc/>
         public async Task UpdateTourAsync(Tour tour)
         {
             _context.Tours.Update(tour);

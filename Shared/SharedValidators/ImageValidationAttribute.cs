@@ -2,10 +2,15 @@
 
 namespace MASProject.Shared.SharedValidators
 {
+    /// <summary>
+    /// Custom validation attribute to check if image URLs have valid extensions and are not empty or contain whitespace.
+    /// </summary>
     public class ImageValidationAttribute : ValidationAttribute
     {
         private readonly string[] _validExtensions;
-
+        /// <summary>
+        /// Constructor to initialize the valid extensions.
+        /// </summary>
         public ImageValidationAttribute(string[] validExtensions)
         {
             _validExtensions = validExtensions;

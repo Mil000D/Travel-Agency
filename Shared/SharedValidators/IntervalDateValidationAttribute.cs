@@ -3,17 +3,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Shared.SharedValidators
 {
+    /// <summary>
+    /// Custom validation attribute to compare dates between properties of an object.
+    /// </summary>
     public class IntervalDateValidationAttribute : ValidationAttribute
     {
         private readonly string _comparisonProperty;
         private readonly ComparisonType _comparisonType;
-
+        
+        /// <summary>
+        /// Enum to specify the type of date comparison.
+        /// </summary>
         public enum ComparisonType
         {
             Before,
             After
         }
-
+        /// <summary>
+        /// Constructor to initialize the comparison property and type.
+        /// </summary>
         public IntervalDateValidationAttribute(string comparisonProperty, ComparisonType comparisonType)
         {
             _comparisonProperty = comparisonProperty;

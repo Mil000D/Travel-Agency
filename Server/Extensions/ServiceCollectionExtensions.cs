@@ -13,8 +13,16 @@ using MASProject.Server.Services.TransportServices;
 
 namespace MASProject.Server.Extensions
 {
+    /// <summary>
+    /// Extension methods for adding repositories and services to the IServiceCollection, to make <see cref="Program"/> class cleaner.
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds repository implementations to the IServiceCollection.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to add new repositories to.</param>
+        /// <returns>The updated IServiceCollection.</returns>
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<ITourRepository, TourRepository>();
@@ -30,6 +38,11 @@ namespace MASProject.Server.Extensions
             return services;
         }
 
+        /// <summary>
+        /// Adds service implementations to the IServiceCollection.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to add new services to.</param>
+        /// <returns>The updated IServiceCollection.</returns>
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<ITourService, TourService>();

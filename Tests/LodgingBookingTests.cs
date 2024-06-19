@@ -1,5 +1,4 @@
-﻿using MASProject.Server.DAL.Context;
-using MASProject.Server.Enums;
+﻿using MASProject.Server.Enums;
 using MASProject.Server.Models.LodgingModels;
 using MASProject.Server.Models.TourModels;
 using MASProject.Server.DAL.BookingRepositories;
@@ -93,6 +92,7 @@ namespace MASProject.Tests
                 TourId = 1,
                 RoomType = "Single",
                 MaxCapacity = 1,
+                Price = 1000,
                 CheckInDate = new DateOnly(2025, 1, 1),
                 CheckOutDate = new DateOnly(2025, 1, 2)
             };

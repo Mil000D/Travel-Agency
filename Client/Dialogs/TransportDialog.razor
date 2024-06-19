@@ -1,4 +1,6 @@
 ﻿@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+
 @if (TransportBookingDTO == null || _transports == null || _transports.Count == 0)
 {
     <DialogSkeleton />
@@ -17,7 +19,7 @@ else
                 </MudSelect>
                 <MudTextField For="@(() => TransportBookingDTO.Origin)" @bind-Value="TransportBookingDTO.Origin" Label="Origin" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.MyLocation" AdornmentColor="Color.Dark" Required="true" Immediate="true" />
                 <MudTextField For="@(() => TransportBookingDTO.Destination)" @bind-Value="TransportBookingDTO.Destination" Label="Destination" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.LocationOn" AdornmentColor="Color.Dark" Required="true" Immediate="true" />
-                <MudTextField For="@(() => TransportBookingDTO.Price)" @bind-Value="TransportBookingDTO.Price" Label="Price" Adornment="Adornment.End" AdornmentText="zł" AdornmentColor="Color.Dark" Required="true" />
+                <MudTextField For="@(() => TransportBookingDTO.Price)" @bind-Value="TransportBookingDTO.Price" Label="Price" Adornment="Adornment.End" AdornmentText="zł" AdornmentColor="Color.Dark" MaxLength="15" Required="true" />
                 <MudTextField For="@(() => TransportBookingDTO.DepartureTime)" T="DateTime?" @bind-Value="TransportBookingDTO.DepartureTime" Format="s" Label="Departure Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
                 <MudTextField For="@(() => TransportBookingDTO.ArrivalTime)" T="DateTime?" @bind-Value="TransportBookingDTO.ArrivalTime" Format="s" Label="Arrival Time" InputType="InputType.DateTimeLocal" Required="true" Immediate="true" />
             </DialogContent>
@@ -32,6 +34,9 @@ else
     [Parameter]
     public TransportBookingDTO TransportBookingDTO { get; set; } = new TransportBookingDTO();
     
+    [Parameter]
+    public List<TransportDTO> InitialTransports { get; set; } = new List<TransportDTO>();
+    
     [CascadingParameter]
     public MudDialogInstance MudDialog { get; set; } = null!;
 
@@ -41,7 +46,24 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _transports = await HttpClient.GetFromJsonAsync<List<TransportDTO>>("api/transports");
+        var allTransports = await HttpClient.GetFromJsonAsync<List<TransportDTO>>("api/transports");
+
+        if (allTransports != null)
+        {
+            _transports = allTransports
+                .Where(t => !InitialTransports.Any(init => init.Id == t.Id))
+                .ToList();
+            if(TransportBookingDTO.Transport != null)
+            {
+                _transports.Add(TransportBookingDTO.Transport);
+            }
+            if (_transports.Count == 0 && TransportBookingDTO.Transport == null)
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add("All available transports have already been added.", Severity.Error);
+                MudDialog.Cancel();
+            }
+        }
     }
 
     private void Save()

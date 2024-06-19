@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Train entity type.
+    /// </summary>
     public class TrainEntityTypeConfiguration : IEntityTypeConfiguration<Train>
     {
+        /// <summary>
+        /// Configures the Train entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Train entity.</param>
         public void Configure(EntityTypeBuilder<Train> builder)
         {
             builder.Property(t => t.TrainNumber)

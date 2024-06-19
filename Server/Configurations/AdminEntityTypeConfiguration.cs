@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Admin entity type.
+    /// </summary>
     public class AdminEntityTypeConfiguration : IEntityTypeConfiguration<Admin>
     {
+        /// <summary>
+        /// Configures the Admin entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Admin entity.</param>
         public void Configure(EntityTypeBuilder<Admin> builder)
         {
             builder.HasData(

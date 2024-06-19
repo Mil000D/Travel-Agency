@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MASProject.Shared.DTOs.LodgingDTOs;
 
-namespace MASProject.Shared.DTOs.UseCaseDTOs
+namespace MASProject.Shared.DTOs.TransportDTOs
 {
-    public class LodgingDTO
+    public class TransportDTO
     {
         public int Id { get; set; }
         [Required]

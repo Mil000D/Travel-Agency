@@ -3,10 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MASProject.Shared.SharedValidators
 {
+    /// <summary>
+    /// Custom validation attribute to check if a collection has specified minimum number of elements.
+    /// </summary>
     public class MinCollectionLengthAttribute : ValidationAttribute
     {
         private readonly int _minLength;
-
+        /// <summary>
+        /// Constructor to initialize the minimum length of collection.
+        /// </summary>
         public MinCollectionLengthAttribute(int minLength)
         {
             _minLength = minLength;

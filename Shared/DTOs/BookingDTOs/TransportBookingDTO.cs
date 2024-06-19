@@ -1,7 +1,8 @@
-﻿using MASProject.Shared.SharedValidators;
+﻿using MASProject.Shared.DTOs.TransportDTOs;
+using MASProject.Shared.SharedValidators;
 using System.ComponentModel.DataAnnotations;
 
-namespace MASProject.Shared.DTOs.UseCaseDTOs
+namespace MASProject.Shared.DTOs.BookingDTOs
 {
     public class TransportBookingDTO : BookingDTO
     {

@@ -17,8 +17,6 @@ namespace MASProject.Tests
                 Password = "password",
                 Name = "John Doe",
                 Surname = "Doe",
-
-
             };
         }
     }

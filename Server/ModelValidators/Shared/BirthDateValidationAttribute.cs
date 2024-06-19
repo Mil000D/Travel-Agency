@@ -2,6 +2,9 @@
 
 namespace MASProject.Server.ModelValidators.Shared
 {
+    /// <summary>
+    /// Custom validation attribute to check if a birth date indicates that a person is at least 18 years old.
+    /// </summary>
     public class BirthDateValidationAttribute : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

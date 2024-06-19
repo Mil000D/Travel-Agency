@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the LodgingBooking entity type.
+    /// </summary>
     public class LodgingBookingEntityTypeConfiguration : IEntityTypeConfiguration<LodgingBooking>
     {
+        /// <summary>
+        /// Configures the LodgingBooking entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the LodgingBooking entity.</param>
         public void Configure(EntityTypeBuilder<LodgingBooking> builder)
         {
             builder.HasKey(tb => new { tb.TourId, tb.LodgingId });

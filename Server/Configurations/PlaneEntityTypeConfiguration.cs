@@ -6,8 +6,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Plane entity type.
+    /// </summary>
     public class PlaneEntityTypeConfiguration : IEntityTypeConfiguration<Plane>
     {
+        /// <summary>
+        /// Configures the Plane entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Plane entity.</param>
         public void Configure(EntityTypeBuilder<Plane> builder)
         {
             builder.Property(p => p.Model)

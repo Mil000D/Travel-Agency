@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the User entity type.
+    /// </summary>
     public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
     {
+        /// <summary>
+        /// Configures the User entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the User entity.</param>
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(u => u.Id);

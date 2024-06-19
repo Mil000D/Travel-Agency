@@ -7,8 +7,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Lodging entity type.
+    /// </summary>
     public class LodgingEntityTypeConfiguration : IEntityTypeConfiguration<Lodging>
     {
+        /// <summary>
+        /// Configures the Lodging entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Lodging entity.</param>
         public void Configure(EntityTypeBuilder<Lodging> builder)
         {
             builder.HasKey(l => l.Id);

@@ -2,13 +2,19 @@
 using MASProject.Server.Models.LodgingModels;
 using MASProject.Server.Models.SharedModels;
 using MASProject.Server.Models.TransportModels;
-using MASProject.Shared.DTOs.UseCaseDTOs;
+using MASProject.Shared.DTOs.BookingDTOs;
 using MASProject.Shared.SharedConverters;
 
 namespace MASProject.Server.Mappings
 {
+    /// <summary>
+    /// AutoMapper profile for booking mappings.
+    /// </summary>
     public class BookingProfile : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BookingProfile"/> class.
+        /// </summary>
         public BookingProfile()
         {
             CreateMap<Booking, BookingDTO>()

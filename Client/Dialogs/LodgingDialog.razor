@@ -1,4 +1,6 @@
 ﻿@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+
 @if(LodgingBookingDTO == null || _lodgings == null || _lodgings.Count == 0)
 {
     <DialogSkeleton/>
@@ -16,8 +18,8 @@ else
                     }
                 </MudSelect>
                 <MudTextField For="@(() => LodgingBookingDTO.RoomType)" @bind-Value="LodgingBookingDTO.RoomType" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Hotel" AdornmentColor="Color.Dark" Label="Room Type" Required="true" />
-                <MudTextField For="@(() => LodgingBookingDTO.MaxCapacity)" @bind-Value="LodgingBookingDTO.MaxCapacity" Label="Max Capacity" InputType="InputType.Number" Adornment="Adornment.End" AdornmentColor="Color.Dark" AdornmentIcon="@Icons.Material.Filled.Groups" Required="true" />
-                <MudTextField For="@(() => LodgingBookingDTO.Price)" @bind-Value="LodgingBookingDTO.Price" Label="Price" Adornment="Adornment.End" AdornmentColor="Color.Dark" AdornmentText="zł" Required="true" />
+                <MudTextField For="@(() => LodgingBookingDTO.MaxCapacity)" @bind-Value="LodgingBookingDTO.MaxCapacity" Label="Max Capacity" InputType="InputType.Number" Adornment="Adornment.End" min="1" AdornmentColor="Color.Dark" AdornmentIcon="@Icons.Material.Filled.Groups" Required="true" />
+                <MudTextField For="@(() => LodgingBookingDTO.Price)" @bind-Value="LodgingBookingDTO.Price" Label="Price" Adornment="Adornment.End" AdornmentColor="Color.Dark" AdornmentText="zł" MaxLength="10" Required="true" />
                 <MudTextField For="@(() => LodgingBookingDTO.CheckInDate)" T="DateTime?" Format="yyyy-MM-dd" @bind-Value="LodgingBookingDTO.CheckInDate" Label="Check-In Date" InputType="InputType.Date" Required="true" />
                 <MudTextField For="@(() => LodgingBookingDTO.CheckOutDate)" T="DateTime?" Format="yyyy-MM-dd" @bind-Value="LodgingBookingDTO.CheckOutDate" Label="Check-Out Date" InputType="InputType.Date" Required="true" />
             </DialogContent>
@@ -32,6 +34,9 @@ else
     [Parameter]
     public LodgingBookingDTO LodgingBookingDTO { get; set; } = new LodgingBookingDTO();
     
+    [Parameter]
+    public List<LodgingDTO> InitialLodgings { get; set; } = new List<LodgingDTO>();
+    
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
@@ -41,7 +46,23 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _lodgings = await HttpClient.GetFromJsonAsync<List<LodgingDTO>>("api/lodgings");
+        var allLodgings = await HttpClient.GetFromJsonAsync<List<LodgingDTO>>("api/lodgings");
+        if (allLodgings != null)
+        {
+            _lodgings = allLodgings
+                .Where(t => !InitialLodgings.Any(init => init.Id == t.Id))
+                .ToList();
+            if (LodgingBookingDTO.Lodging != null)
+            {
+                _lodgings.Add(LodgingBookingDTO.Lodging);
+            }
+            if (_lodgings.Count == 0 && LodgingBookingDTO.Lodging == null)
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add("All available lodgings have already been added.", Severity.Error);
+                MudDialog.Cancel();
+            }
+        }
     }
 
     private void Save()

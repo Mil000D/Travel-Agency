@@ -1,13 +1,18 @@
 ﻿using MASProject.Server.Models.TransportModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.Hosting;
-using System.Reflection.Emit;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Transport entity type.
+    /// </summary>
     public class TransportEntityTypeConfiguration : IEntityTypeConfiguration<Transport>
     {
+        /// <summary>
+        /// Configures the Transport entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Transport entity.</param>
         public void Configure(EntityTypeBuilder<Transport> builder)
         {
             builder.HasKey(t => t.Id);

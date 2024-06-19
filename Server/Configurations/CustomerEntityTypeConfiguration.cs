@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MASProject.Server.Configurations
 {
+    /// <summary>
+    /// Configuration class for the Customer entity type.
+    /// </summary>
     public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer>
     {
+        /// <summary>
+        /// Configures the Customer entity.
+        /// </summary>
+        /// <param name="builder">The builder used to configure the Customer entity.</param>
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
             builder.Property(c => c.Email)

@@ -1,7 +1,8 @@
-﻿using MASProject.Shared.SharedValidators;
+﻿using MASProject.Shared.DTOs.BookingDTOs;
+using MASProject.Shared.SharedValidators;
 using System.ComponentModel.DataAnnotations;
 
-namespace MASProject.Shared.DTOs.UseCaseDTOs
+namespace MASProject.Shared.DTOs.TourDTOs
 {
     public class UpdateTourDTO
     {

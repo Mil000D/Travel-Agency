@@ -18,26 +18,6 @@ namespace MASProject.Server.Models.TourModels
         [Required]
         [FutureDateValidation]
         public DateOnly PaymentDate { get; set; }
-        public float TotalPrice
-        {
-            get
-            {
-                float totalPrice = 0;
-                if(Tour.TransportBookings == null || Tour.LodgingBookings == null)
-                {
-                    return totalPrice;
-                }
-                foreach (var booking in Tour.TransportBookings)
-                {
-                    totalPrice += booking.Price;
-                }
-                foreach (var booking in Tour.LodgingBookings)
-                {
-                    totalPrice += booking.Price;
-                }
-                return totalPrice;
-            }
-        }
         public TourStatus TourStatus { get; set; }
     }
 }

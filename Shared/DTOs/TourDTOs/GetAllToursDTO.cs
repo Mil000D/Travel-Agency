@@ -1,6 +1,4 @@
-﻿using MASProject.Shared.DTOs.TourDTOs;
-
-namespace MASProject.Shared.DTOs.UseCaseDTOs
+﻿namespace MASProject.Shared.DTOs.TourDTOs
 {
     public class GetAllToursDTO
     {
